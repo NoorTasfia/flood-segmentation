@@ -40,14 +40,25 @@ def benchmark_latency(model: torch.nn.Module, *, img_size: int = 256, n_warm: in
 
 def benchmark_onnxruntime(onnx_path, *, img_size: int = 256, n_warm: int = 20,
                           n_iter: int = 200,
-                          providers: list[str] | None = None) -> dict[str, float]:
+                          providers: list[str] | None = None,
+                          intra_op_threads: int | None = None) -> dict[str, float]:
     """Measure latency of an ONNX model under onnxruntime.
 
     Used for AWS Graviton (ARM CPU) and WASM targets. Output schema matches
     benchmark_latency so downstream code can pool both.
+
+    ``intra_op_threads=None`` keeps ORT's default thread pool (all cores);
+    an integer pins the intra-op pool to that many threads (inter-op is then
+    pinned to 1), e.g. ``intra_op_threads=1`` for the single-threaded
+    portability configuration reported alongside the default-pool numbers.
     """
     import onnxruntime as ort
-    sess = ort.InferenceSession(str(onnx_path),
+    sess_options = None
+    if intra_op_threads is not None:
+        sess_options = ort.SessionOptions()
+        sess_options.intra_op_num_threads = intra_op_threads
+        sess_options.inter_op_num_threads = 1
+    sess = ort.InferenceSession(str(onnx_path), sess_options,
                                  providers=providers or ["CPUExecutionProvider"])
     in_name = sess.get_inputs()[0].name
     x = np.random.randn(1, 3, img_size, img_size).astype(np.float32)

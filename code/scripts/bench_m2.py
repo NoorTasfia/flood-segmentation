@@ -59,6 +59,15 @@ def main() -> None:
         default="runs/3fold/lat_m2.json",
         help="Output JSON path. Default: runs/3fold/lat_m2.json",
     )
+    ap.add_argument(
+        "--threads",
+        choices=("default", "single", "both"),
+        default="both",
+        help="ORT threading: 'default' = ORT's default pool (all cores), "
+             "'single' = pinned intra_op=1 (portability configuration), "
+             "'both' = measure both (keys with no suffix = default pool, "
+             "'_1t' suffix = single-threaded). Default: both",
+    )
     args = ap.parse_args()
 
     ckpt_dir = Path(args.ckpt_dir)
@@ -137,13 +146,20 @@ def main() -> None:
                      exports_dir / f"{s}_fold{args.fold}_int8.onnx"),
         ))
 
+    thread_configs: list[tuple[str, int | None]] = []
+    if args.threads in ("default", "both"):
+        thread_configs.append(("", None))       # ORT default pool
+    if args.threads in ("single", "both"):
+        thread_configs.append(("_1t", 1))       # pinned single-thread
+
     for name, op in onnx_targets:
         if op is None:
             print(f"INFO: ONNX for '{name}' not found in {exports_dir}, skipping.")
             continue
-        key = f"{name}_ort_cpu"
-        out[key] = benchmark_onnxruntime(op)
-        print(f"{key} ({op.name}): {out[key]}")
+        for suffix, n_threads in thread_configs:
+            key = f"{name}_ort_cpu{suffix}"
+            out[key] = benchmark_onnxruntime(op, intra_op_threads=n_threads)
+            print(f"{key} ({op.name}): {out[key]}")
 
     # ------------------------------------------------------------------
     # 3. Write results
