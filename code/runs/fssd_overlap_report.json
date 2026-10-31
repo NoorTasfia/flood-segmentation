@@ -1,0 +1,9 @@
+{
+  "threshold": 8,
+  "n_fssd_images": 663,
+  "n_combined_images": 3009,
+  "n_hits": 0,
+  "blocking": [],
+  "warnings": [],
+  "passed": true
+}
