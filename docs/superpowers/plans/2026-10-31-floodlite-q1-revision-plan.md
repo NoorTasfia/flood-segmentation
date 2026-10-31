@@ -178,6 +178,31 @@ dataset properties — one sentence justifies this).
   MobileViT 0.73→0.35) — a genuinely new finding if it holds. D1+bootstrap
   re-running with corrected semantics.
 
+### 2026-11-01 — merge with the parallel M2-side revision line + push
+- Remote main had **16 parallel commits** (co-author work on the M2):
+  **A4/A5 were done there** — teacher ORT-CPU 37.6 ms (ORT 1.17) / 36.7 ms
+  (1.22.1), honest INT8-vs-teacher speedup **2.2×**, threading claim fixed,
+  provenance pinned; plus Sen1Floods11 OOD eval (all models collapse to IoU
+  ≈0.16, their T6/§5.7), a measured HardSwish-vs-ReLU6 activation-range
+  diagnostic (12–17×), pooled per-image bootstrap n=399 (KD significance
+  story), decision matrix T7, error taxonomy T8, co-authors
+  (Chawdhury/Khalil/Haque), **IJDRR targeted**, Zenodo/CITATION scaffolding.
+- Integration: 7 code/docs commits cherry-picked cleanly onto origin/main
+  (suite 41 passed after merge); the manuscript commit was **re-applied
+  semantically** onto their revision instead of textually: kept their
+  measured numbers/structure, re-fixed what they still had wrong (Hernández
+  "reports no latency" claim — false; per-channel-weights claim — code says
+  per_channel=False; "multi-platform" in §1/§8; ghost utils.py in appendix),
+  re-added the 18 verified refs (38→56), and added the within-regime
+  zero-shot as **§5.8 + T9** (renumbered; their T6=Sen1Floods11) with
+  abstract/§1-contribution-4/§6/§7/§8 tie-ins. Compiles clean.
+- **Pushed to origin/main (cdbed68..d1c69da)** after switching the machine's
+  GitHub identity to NoorTasfia (`gh auth setup-git`; m-ibrahim-khalil has
+  pull-only access).
+- A4/A5/A6 are now effectively **done** (their measured 2.2× + my
+  CPU-and-browser rescoping); remaining A-items: none. D2 queue is unblocked
+  (repo main now has the combined-dataset code).
+
 ### 2026-11-01 (continued) — D1 integrated throughout the manuscript
 - **New §5.6 + T6** (fold-0 numbers, TODO → 3-fold): three findings written up.
 - **Stale-claim sweep after D1:** §7 "cross-domain evaluation unverified" →
