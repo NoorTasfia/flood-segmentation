@@ -2,8 +2,10 @@
 from __future__ import annotations
 from pathlib import Path
 import numpy as np
-import cv2
 import pytest
+
+torch = pytest.importorskip("torch", exc_type=Exception)
+cv2 = pytest.importorskip("cv2", exc_type=Exception)
 
 from floodlite.data import make_sen1floods11_loader
 

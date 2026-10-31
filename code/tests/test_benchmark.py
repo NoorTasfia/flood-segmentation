@@ -1,8 +1,9 @@
 """Tests for benchmark utilities."""
 from __future__ import annotations
 from pathlib import Path
-import torch
 import pytest
+
+torch = pytest.importorskip("torch", exc_type=Exception)
 
 from floodlite.models import make_student
 from floodlite.export import export_onnx

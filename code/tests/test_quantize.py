@@ -1,8 +1,9 @@
 """Tests for INT8 post-training quantization."""
 from __future__ import annotations
-import torch
-from torch.utils.data import DataLoader, TensorDataset
 import pytest
+
+torch = pytest.importorskip("torch", exc_type=Exception)
+from torch.utils.data import DataLoader, TensorDataset
 
 from floodlite.models import make_student
 from floodlite.quantize import quantize_int8, model_size_mb

@@ -1,6 +1,8 @@
 """Tests for model factory functions."""
 from __future__ import annotations
-import torch
+import pytest
+
+torch = pytest.importorskip("torch", exc_type=Exception)
 from floodlite.models import (
     make_teacher, make_student, make_baseline_mobilenetv2,
     count_params, STUDENT_BACKBONES,
