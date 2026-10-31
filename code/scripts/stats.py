@@ -1,8 +1,12 @@
 """Statistical comparisons across folds and within fold-0 pixels.
 
 Outputs:
-  - 3-fold paired Wilcoxon for: no-KD vs comb-KD (per student); teacher vs best.
+  - 3-fold paired Wilcoxon for: no-KD vs {resp, feat, comb}-KD (per student);
+    teacher vs best.
   - Fold-0 paired pixel-bootstrap (n=1000 resamples) for the same comparisons.
+
+torch is imported lazily: the fold-level Wilcoxon runs from results.json alone
+(no torch needed); only the per-image bootstrap (--data_root) requires torch.
 """
 from __future__ import annotations
 import argparse, json, sys
@@ -11,15 +15,16 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 import numpy as np
-import torch
 from scipy.stats import wilcoxon
 
-from floodlite.data import make_loaders
-from floodlite.models import make_teacher, make_student, STUDENT_BACKBONES
-from floodlite.metrics import compute_metrics
+# Mirrors floodlite.models.STUDENT_BACKBONES keys; kept local so the
+# torch-free Wilcoxon path runs without importing torch.
+STUDENT_BACKBONES = ("mobilenetv3_small", "efficientnet_lite0", "mobilevit_xxs")
 
 
 def per_image_iou(model, loader, device):
+    import torch
+    from floodlite.metrics import compute_metrics
     model.eval()
     ious = []
     with torch.no_grad():
@@ -54,28 +59,35 @@ def main():
 
     results = json.loads(Path(args.results).read_text())
 
-    # ----- 3-fold Wilcoxon -----
+    # ----- 3-fold Wilcoxon: no-KD vs each KD configuration -----
     wilc = {}
     for sname in STUDENT_BACKBONES:
-        none_iou, comb_iou = [], []
+        ious = {kd: [] for kd in ("none", "resp", "feat", "comb")}
         for fold in (0, 1, 2):
             students = results[f"fold_{fold}"]["students"]
-            none_iou.append(students[f"{sname}_none"]["iou"])
-            comb_iou.append(students[f"{sname}_comb"]["iou"])
-        try:
-            stat, p = wilcoxon(none_iou, comb_iou)
-            wilc[f"{sname}_none_vs_comb"] = {
-                "n": 3, "p_value": float(p), "stat": float(stat),
-                "mean_delta": float(np.mean(np.array(none_iou) - np.array(comb_iou))),
-                "note": "n=3 -> minimum two-sided p ≈ 0.25 (low power)",
-            }
-        except ValueError as e:
-            wilc[f"{sname}_none_vs_comb"] = {"n": 3, "error": str(e)}
+            for kd in ious:
+                ious[kd].append(students[f"{sname}_{kd}"]["iou"])
+        for kd in ("resp", "feat", "comb"):
+            key = f"{sname}_none_vs_{kd}"
+            try:
+                stat, p = wilcoxon(ious["none"], ious[kd])
+                wilc[key] = {
+                    "n": 3, "p_value": float(p), "stat": float(stat),
+                    "mean_delta": float(np.mean(np.array(ious["none"]) - np.array(ious[kd]))),
+                    "per_fold_delta_kd_minus_none": [
+                        float(k - n) for n, k in zip(ious["none"], ious[kd])],
+                    "note": "n=3 -> minimum two-sided p ≈ 0.25 (low power)",
+                }
+            except ValueError as e:
+                wilc[key] = {"n": 3, "error": str(e)}
 
     # ----- Fold-0 paired pixel-bootstrap (optional, needs FSSD locally) -----
     boot = None
     if args.data_root and Path(args.data_root).exists():
         try:
+            import torch
+            from floodlite.data import make_loaders
+            from floodlite.models import make_student
             device = "cuda" if torch.cuda.is_available() else "cpu"
             _, va = make_loaders(args.data_root, fold=0, batch_size=8)
             boot = {}
@@ -109,12 +121,12 @@ def main():
         if "error" in v:
             print(f"  {k}: {v['error']}")
         else:
-            print(f"  {k}: mean Δ={v['mean_delta']:+.4f}  p={v['p_value']:.4f}")
+            print(f"  {k}: mean delta={v['mean_delta']:+.4f}  p={v['p_value']:.4f}")
     if boot and "skipped_reason" not in boot and "error" not in boot:
         print()
         print("=== Bootstrap (fold-0 per-image, n=1000) ===")
         for k, v in boot.items():
-            print(f"  {k}: mean Δ={v['mean_delta']:+.4f}  p_one_sided={v['p_one_sided_no_kd_better']:.4f}")
+            print(f"  {k}: mean delta={v['mean_delta']:+.4f}  p_one_sided={v['p_one_sided_no_kd_better']:.4f}")
 
 
 if __name__ == "__main__":

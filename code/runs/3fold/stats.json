@@ -1,10 +1,63 @@
 {
   "wilcoxon_3fold": {
+    "mobilenetv3_small_none_vs_resp": {
+      "n": 3,
+      "p_value": 0.25,
+      "stat": 0.0,
+      "mean_delta": 0.00402233764237044,
+      "per_fold_delta_kd_minus_none": [
+        -0.005075349527246753,
+        -0.0017896785455591147,
+        -0.0052019848543054525
+      ],
+      "note": "n=3 -> minimum two-sided p \u2248 0.25 (low power)"
+    },
+    "mobilenetv3_small_none_vs_feat": {
+      "n": 3,
+      "p_value": 1.0,
+      "stat": 3.0,
+      "mean_delta": -0.00023460855671005495,
+      "per_fold_delta_kd_minus_none": [
+        0.002200656077441132,
+        0.0010913750704596437,
+        -0.002588205477770611
+      ],
+      "note": "n=3 -> minimum two-sided p \u2248 0.25 (low power)"
+    },
     "mobilenetv3_small_none_vs_comb": {
       "n": 3,
       "p_value": 0.5,
       "stat": 1.0,
       "mean_delta": 0.0026661029048994,
+      "per_fold_delta_kd_minus_none": [
+        0.0005820358500762124,
+        -0.00560911963967714,
+        -0.002971224925097271
+      ],
+      "note": "n=3 -> minimum two-sided p \u2248 0.25 (low power)"
+    },
+    "efficientnet_lite0_none_vs_resp": {
+      "n": 3,
+      "p_value": 0.5,
+      "stat": 1.0,
+      "mean_delta": 0.002441468192081834,
+      "per_fold_delta_kd_minus_none": [
+        -0.0038059248643762533,
+        0.0033123423071468316,
+        -0.006830822019016081
+      ],
+      "note": "n=3 -> minimum two-sided p \u2248 0.25 (low power)"
+    },
+    "efficientnet_lite0_none_vs_feat": {
+      "n": 3,
+      "p_value": 0.75,
+      "stat": 2.0,
+      "mean_delta": 0.0001966263733658158,
+      "per_fold_delta_kd_minus_none": [
+        -0.0021846329464630942,
+        0.0018509380957658639,
+        -0.000256184269400217
+      ],
       "note": "n=3 -> minimum two-sided p \u2248 0.25 (low power)"
     },
     "efficientnet_lite0_none_vs_comb": {
@@ -12,6 +65,35 @@
       "p_value": 1.0,
       "stat": 3.0,
       "mean_delta": 0.0013422218023562509,
+      "per_fold_delta_kd_minus_none": [
+        0.000348122680888463,
+        0.000814115299897944,
+        -0.005188903387855159
+      ],
+      "note": "n=3 -> minimum two-sided p \u2248 0.25 (low power)"
+    },
+    "mobilevit_xxs_none_vs_resp": {
+      "n": 3,
+      "p_value": 0.25,
+      "stat": 0.0,
+      "mean_delta": 0.004091116727567197,
+      "per_fold_delta_kd_minus_none": [
+        -0.005714546231662565,
+        -0.006541897268856234,
+        -1.6906682182793453e-05
+      ],
+      "note": "n=3 -> minimum two-sided p \u2248 0.25 (low power)"
+    },
+    "mobilevit_xxs_none_vs_feat": {
+      "n": 3,
+      "p_value": 0.75,
+      "stat": 2.0,
+      "mean_delta": 0.0010706899212855614,
+      "per_fold_delta_kd_minus_none": [
+        -0.005264222621917725,
+        -0.0018260338727165148,
+        0.0038781867307775553
+      ],
       "note": "n=3 -> minimum two-sided p \u2248 0.25 (low power)"
     },
     "mobilevit_xxs_none_vs_comb": {
@@ -19,10 +101,29 @@
       "p_value": 0.25,
       "stat": 0.0,
       "mean_delta": 0.004932519267587088,
+      "per_fold_delta_kd_minus_none": [
+        -0.004157248665304758,
+        -0.008053656886605642,
+        -0.0025866522508508627
+      ],
       "note": "n=3 -> minimum two-sided p \u2248 0.25 (low power)"
     }
   },
   "bootstrap_fold0": {
-    "skipped_reason": "no --data_root provided or path missing"
+    "mobilenetv3_small_none_vs_comb": {
+      "n": 133,
+      "mean_delta": -0.0012426445806833137,
+      "p_one_sided_no_kd_better": 0.622
+    },
+    "efficientnet_lite0_none_vs_comb": {
+      "n": 133,
+      "mean_delta": -0.00035972635548813897,
+      "p_one_sided_no_kd_better": 0.521
+    },
+    "mobilevit_xxs_none_vs_comb": {
+      "n": 133,
+      "mean_delta": 0.0043515419601497796,
+      "p_one_sided_no_kd_better": 0.081
+    }
   }
 }
