@@ -1,0 +1,29 @@
+% =====================================================================
+%  Table T9 -- Zero-shot generalization (FSSD-trained, no fine-tuning)
+%  Source of truth: code/runs/3fold/zero_shot_3fold.json
+%  (per-fold detail: zero_shot_fold{0,1,2}.json; aggregate_zero_shot.py)
+% =====================================================================
+\begin{table*}[ht]
+\centering
+\caption{\textbf{Zero-shot generalization of FSSD-trained models} (no fine-tuning; mean $\pm$ std across the three folds' checkpoints) on AIFloodSense (94 images, all flood-containing) and the held-out FloodNet test split (424 images, 215 of them water-free). Per-image macro metrics (Section~\ref{sec:setup-metrics}): IoU over all images, flood-only IoU over flood-containing images, and false-alarm rate (FAR) over water-free images. FSSD contains no water-free images, and every FP32 model false-alarms on 72--100\% of water-free FloodNet scenes. INT8 degradation exceeds its in-domain counterpart (cf.~Table~\ref{tab:t4-quant}): MobileNetV3-Small-INT8's seemingly moderate overall FloodNet IoU is an artifact of near-constant background prediction (flood-only IoU 0.08).}
+\label{tab:t9-zeroshot}
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{llcccc}
+\toprule
+& & \textbf{AIFloodSense} & \multicolumn{3}{c}{\textbf{FloodNet test}} \\
+\cmidrule(lr){4-6}
+\textbf{Model} & \textbf{Prec.} & \textbf{IoU} & \textbf{IoU (all)} & \textbf{IoU (flood)} & \textbf{FAR} \\
+\midrule
+Teacher (UNet$+$EffB0)  & FP32 & 0.706 $\pm$ 0.004 & 0.288 $\pm$ 0.014 & 0.509 $\pm$ 0.010 & 0.927 $\pm$ 0.018 \\
+MobileNetV2 baseline    & FP32 & 0.690 $\pm$ 0.014 & 0.378 $\pm$ 0.015 & 0.475 $\pm$ 0.020 & 0.716 $\pm$ 0.040 \\
+MobileNetV3-Small       & FP32 & 0.698 $\pm$ 0.008 & 0.285 $\pm$ 0.005 & 0.506 $\pm$ 0.012 & 0.929 $\pm$ 0.021 \\
+EfficientNet-Lite0      & FP32 & 0.702 $\pm$ 0.006 & 0.388 $\pm$ 0.025 & 0.507 $\pm$ 0.021 & 0.727 $\pm$ 0.032 \\
+MobileViT-XXS           & FP32 & 0.723 $\pm$ 0.006 & 0.253 $\pm$ 0.004 & 0.512 $\pm$ 0.007 & 1.000 $\pm$ 0.000 \\
+\midrule
+MobileNetV3-Small       & INT8 & 0.192 $\pm$ 0.164 & 0.355 $\pm$ 0.140 & 0.077 $\pm$ 0.073 & 0.375 $\pm$ 0.346 \\
+EfficientNet-Lite0      & INT8 & 0.649 $\pm$ 0.028 & 0.258 $\pm$ 0.011 & 0.453 $\pm$ 0.032 & 0.932 $\pm$ 0.012 \\
+MobileViT-XXS           & INT8 & 0.337 $\pm$ 0.078 & 0.092 $\pm$ 0.019 & 0.172 $\pm$ 0.049 & 0.986 $\pm$ 0.011 \\
+\bottomrule
+\end{tabular}
+\end{table*}

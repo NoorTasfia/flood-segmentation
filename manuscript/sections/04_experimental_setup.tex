@@ -20,7 +20,7 @@ We use 3-fold cross-validation with \texttt{sklearn.\allowbreak{}model\_selectio
 \subsection{Metrics}
 \label{sec:setup-metrics}
 
-We report pixel accuracy, precision, recall, F1-score, and mean intersection-over-union (IoU). Efficiency metrics are model parameters (M, from \texttt{torchinfo.summary}) and ONNX disk size (MB). Latency is reported as median (p50), 95th percentile (p95), mean, and standard deviation over 200 timed forward passes after 20 warm-up passes; throughput as FPS $= 1000\,/\,\text{p50}_{\text{ms}}$. All latency measurements use single-image batches at $256{\times}256$ input resolution.
+We report pixel accuracy, precision, recall, F1-score, and mean intersection-over-union (IoU). For the within-regime zero-shot evaluation (Section~\ref{sec:results-zeroshot}) metrics are computed \emph{per image} and reported as macro statistics, since those test sets mix flood and flood-free scenes: an image with no water in the ground truth and none predicted counts as a correct rejection (IoU 1); over flood-containing images we report the flood-only IoU; and over water-free images we report the false-alarm rate (FAR), the fraction on which the model predicts any water at all. Efficiency metrics are model parameters (M, from \texttt{torchinfo.summary}) and ONNX disk size (MB). Latency is reported as median (p50), 95th percentile (p95), mean, and standard deviation over 200 timed forward passes after 20 warm-up passes; throughput as FPS $= 1000\,/\,\text{p50}_{\text{ms}}$. All latency measurements use single-image batches at $256{\times}256$ input resolution.
 
 \subsection{Statistical Validation}
 \label{sec:setup-stats}

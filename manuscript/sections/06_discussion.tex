@@ -34,6 +34,8 @@ We still do not recommend the teacher (UNet$+$EffB0) for deployment, but for a s
 
 Table~\ref{tab:t7-decision} consolidates these recommendations into a decision matrix, pairing each operational scenario with the configuration we recommend and the metric that decides it.
 
+All of these recommendations carry the zero-shot caveats of Sections~\ref{sec:results-ood} and~\ref{sec:results-zeroshot}: the artifacts are validated for in-domain, close-range RGB; FSSD-trained models false-alarm on the majority of water-free scenes and must be retrained on negative-image-bearing data (Section~\ref{sec:methods-data}) before \emph{unattended} monitoring use; and INT8 artifacts in particular should be re-validated on in-deployment-domain imagery, since their degradation worsens under distribution shift in a way that in-domain calibration metrics do not predict.
+
 \input{tables/T7_decision_matrix}
 
 \subsection{Architecture-Dependent PTQ Stability is a Practitioner Trap}
