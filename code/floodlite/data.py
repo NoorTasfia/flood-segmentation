@@ -28,6 +28,9 @@ import albumentations as A
 from albumentations.pytorch import ToTensorV2
 import cv2
 
+from floodlite.manifest import (load_manifest, split_manifest, pairs_from_rows,
+                                source_balance_weights)
+
 IMG_EXTS = {".jpg", ".jpeg", ".png"}
 MASK_EXTS = (".png", ".jpg", ".jpeg")  # tried in this order to find the mask for a given image stem
 
@@ -98,6 +101,20 @@ def collect_pairs(root: str | Path) -> tuple[list[tuple[Path, Path]], list[tuple
     return gather_pairs(train_imgs, train_lbls), gather_pairs(val_imgs, val_lbls)
 
 
+def _read_rgb(path: Path) -> np.ndarray:
+    """Read an image as RGB; falls back to PIL where cv2 cannot decode.
+
+    The combined dataset has 45 files named .jpg whose real encoding is
+    WebP/PNG/GIF — cv2.imread returns None for GIF.
+    """
+    img = cv2.imread(str(path))
+    if img is not None:
+        return cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    from PIL import Image
+    with Image.open(path) as im:
+        return np.array(im.convert("RGB"))
+
+
 class FSSD(Dataset):
     """FSSD dataset built from a list of (image_path, mask_path) pairs."""
 
@@ -113,7 +130,7 @@ class FSSD(Dataset):
 
     def __getitem__(self, idx: int):
         img_path, mask_path = self.pairs[idx]
-        img = cv2.cvtColor(cv2.imread(str(img_path)), cv2.COLOR_BGR2RGB)
+        img = _read_rgb(img_path)
         mask = (cv2.imread(str(mask_path), cv2.IMREAD_GRAYSCALE) > 127).astype(np.float32)
         out = self.tfm(image=img, mask=mask)
         return out["image"], out["mask"].unsqueeze(0)  # (1, H, W)
@@ -171,6 +188,50 @@ def make_loaders(root: str | Path, fold: int, n_folds: int = 5,
     val_loader = DataLoader(val_ds, batch_size=batch_size, shuffle=False,
                             num_workers=num_workers, pin_memory=True)
     return train_loader, val_loader
+
+
+def source_balanced_sampler(sources: list[str], seed: int = 42):
+    """WeightedRandomSampler drawing each source equally often in expectation.
+
+    On the combined dataset FloodNet outnumbers Kaggle ~10:1 with far less
+    water per image (14% vs 41%); inverse-frequency weights keep training
+    batches source-balanced.
+    """
+    from torch.utils.data import WeightedRandomSampler
+    weights = torch.as_tensor(source_balance_weights(sources), dtype=torch.double)
+    generator = torch.Generator()
+    generator.manual_seed(seed)
+    return WeightedRandomSampler(weights, num_samples=len(sources),
+                                 replacement=True, generator=generator)
+
+
+def make_combined_loaders(root: str | Path, fold: int, n_folds: int = 5,
+                          batch_size: int = 8, img_size: int = 256,
+                          num_workers: int = 2, seed: int = 42,
+                          balance_sources: bool = True) -> dict[str, DataLoader]:
+    """DataLoaders for the flood-combined-fsegnet dataset, driven by manifest.csv.
+
+    Returns {'train', 'val', 'test', 'external'} (see floodlite.manifest for
+    the split semantics: val is the duplicate-aware Kaggle fold, test is the
+    held-out FloodNet test split, external is AIFloodSense zero-shot).
+    """
+    rows = load_manifest(root)
+    split = split_manifest(rows, fold, n_folds)
+    pairs = {name: pairs_from_rows(root, split_rows)
+             for name, split_rows in split.items()}
+
+    train_ds = FSSD(pairs["train"], img_size=img_size, train=True)
+    sampler = (source_balanced_sampler([r["source"] for r in split["train"]], seed)
+               if balance_sources else None)
+    loaders = {"train": DataLoader(train_ds, batch_size=batch_size,
+                                   sampler=sampler, shuffle=sampler is None,
+                                   num_workers=num_workers, pin_memory=True,
+                                   drop_last=True)}
+    for name in ("val", "test", "external"):
+        ds = FSSD(pairs[name], img_size=img_size, train=False)
+        loaders[name] = DataLoader(ds, batch_size=batch_size, shuffle=False,
+                                   num_workers=num_workers, pin_memory=True)
+    return loaders
 
 
 def make_sen1floods11_loader(root: str | Path, *, n_chips: int = 250,
