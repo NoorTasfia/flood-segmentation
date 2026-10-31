@@ -1,9 +1,19 @@
-"""End-to-end driver: trains teacher + students + ablation + quantization on FSSD.
+"""End-to-end driver: trains teacher + students + ablation + quantization.
 
 Usage (after `pip install -r requirements.txt`):
     python scripts/run_full_experiment.py --data_root /path/to/FSSD --fold 0
 
 Set --folds 5 to loop over the full cross-validation.
+
+Combined-dataset mode (flood-combined-fsegnet; reduced D2 grid):
+    python scripts/run_full_experiment.py --dataset combined \
+        --data_root /path/to/dataset_combined --fold 0 --folds 3 \
+        --kd_configs none comb --skip_quant --out_dir runs/combined
+
+In combined mode every model is additionally evaluated on the held-out
+FloodNet test split and the AIFloodSense external set with per-image (macro)
+metrics; results.json entries then hold {"val", "test", "external"} blocks
+instead of the flat FSSD metric dict.
 """
 from __future__ import annotations
 import argparse, json, time, copy, os, sys
@@ -17,7 +27,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import numpy as np
 import torch
 
-from floodlite.data import make_loaders, FSSD
+from floodlite.data import make_loaders, make_combined_loaders, FSSD
 from floodlite.models import make_teacher, make_student, count_params, estimate_flops, STUDENT_BACKBONES, make_baseline_mobilenetv2
 from floodlite.train import train_teacher, train_student_kd
 from floodlite.train import train_teacher as train_taskonly
@@ -27,7 +37,7 @@ from floodlite.quantize import (
     file_size_mb,
 )
 from floodlite.benchmark import benchmark_latency
-from floodlite.metrics import compute_metrics
+from floodlite.metrics import compute_metrics, evaluate_per_image
 
 
 def device_pick():
@@ -49,6 +59,15 @@ def evaluate(model, loader, device):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--data_root", required=True)
+    ap.add_argument("--dataset", choices=("fssd", "combined"), default="fssd",
+                    help="'fssd' = original layout + KFold; 'combined' = "
+                         "manifest-driven flood-combined-fsegnet splits")
+    ap.add_argument("--kd_configs", nargs="+", default=["none", "resp", "feat", "comb"],
+                    choices=["none", "resp", "feat", "comb"],
+                    help="KD configurations to train (D2 reduced grid: none comb)")
+    ap.add_argument("--skip_quant", action="store_true", default=False,
+                    help="Skip the INT8 quantization + latency legs "
+                         "(recommended for combined-dataset D2 runs)")
     ap.add_argument("--fold", type=int, default=0)
     ap.add_argument("--folds", type=int, default=3, help="Number of folds to run starting from --fold")
     ap.add_argument("--epochs_teacher", type=int, default=35)
@@ -71,7 +90,25 @@ def main():
     all_results = {}
     for fold in range(args.fold, args.fold + args.folds):
         print(f"\n========== Fold {fold} ==========")
-        tr, va = make_loaders(args.data_root, fold=fold, batch_size=args.batch_size)
+        extra_eval = {}  # combined mode: held-out test + external zero-shot loaders
+        if args.dataset == "combined":
+            loaders = make_combined_loaders(args.data_root, fold=fold,
+                                            batch_size=args.batch_size)
+            tr, va = loaders["train"], loaders["val"]
+            extra_eval = {"test": loaders["test"], "external": loaders["external"]}
+        else:
+            tr, va = make_loaders(args.data_root, fold=fold, batch_size=args.batch_size)
+
+        def eval_all(model):
+            """FSSD mode: legacy flat metric dict on val. Combined mode:
+            per-image summaries on val + held-out test + external."""
+            if not extra_eval:
+                return evaluate(model, va, device)
+            out = {"val": evaluate_per_image(model, va, device)}
+            for split, loader in extra_eval.items():
+                out[split] = evaluate_per_image(model, loader, device)
+            return out
+
         ckpt_teacher = Path(args.out_dir) / f"teacher_fold{fold}.pt"
         teacher = make_teacher().to(device)
         if args.skip_if_exists and ckpt_teacher.exists():
@@ -79,7 +116,7 @@ def main():
         else:
             train_teacher(teacher, tr, va, epochs=args.epochs_teacher, device=device, ckpt_path=ckpt_teacher)
         teacher.load_state_dict(torch.load(ckpt_teacher, map_location=device))
-        teacher_metrics = evaluate(teacher, va, device)
+        teacher_metrics = eval_all(teacher)
         print(f"Teacher final: {teacher_metrics}")
 
         baseline_metrics = None
@@ -91,12 +128,12 @@ def main():
             else:
                 train_taskonly(baseline, tr, va, epochs=args.epochs_student, device=device, ckpt_path=ckpt_baseline)
             baseline.load_state_dict(torch.load(ckpt_baseline, map_location=device))
-            baseline_metrics = evaluate(baseline, va, device)
+            baseline_metrics = eval_all(baseline)
             print(f"Baseline (MobileNetV2): {baseline_metrics}")
 
         fold_results = {"teacher": teacher_metrics, "baseline_mobilenetv2": baseline_metrics, "students": {}}
         for sname in STUDENT_BACKBONES:
-            for kd in ("none", "resp", "feat", "comb"):
+            for kd in args.kd_configs:
                 use_resp = kd in ("resp", "comb")
                 use_feat = kd in ("feat", "comb")
                 ckpt = Path(args.out_dir) / f"{sname}_{kd}_fold{fold}.pt"
@@ -108,14 +145,15 @@ def main():
                                      epochs=args.epochs_student, use_response=use_resp, use_feature=use_feat,
                                      device=device, ckpt_path=ckpt)
                 student.load_state_dict(torch.load(ckpt, map_location=device))
-                m = evaluate(student, va, device)
+                m = eval_all(student)
                 fold_results["students"][f"{sname}_{kd}"] = m
                 print(f"[{sname} {kd}] {m}")
 
         # Quantize the no-KD students via ONNX dynamic quantization
         # (PyTorch eager-mode static PTQ fails on timm Conv2dSame in modern PyTorch).
         exports_dir = Path(args.out_dir) / "exports"
-        for sname in STUDENT_BACKBONES:
+        quant_targets = () if args.skip_quant else tuple(STUDENT_BACKBONES)
+        for sname in quant_targets:
             ckpt = Path(args.out_dir) / f"{sname}_none_fold{fold}.pt"
             if not ckpt.exists():
                 print(f"Quantize {sname}: skipping, no-KD checkpoint missing")
