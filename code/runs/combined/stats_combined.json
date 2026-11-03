@@ -1,0 +1,111 @@
+{
+  "n_test": 424,
+  "n_dry": 215,
+  "n_flood": 209,
+  "kd_contrast": {
+    "mobilenetv3_small": {
+      "flood_iou_comb_minus_none": {
+        "mean": 0.02608910842484496,
+        "ci95": [
+          0.01469670090098116,
+          0.03837105774541981
+        ],
+        "p_le_0": 0.0,
+        "n": 209
+      },
+      "far_comb_minus_none": {
+        "mean": 0.04806201550387596,
+        "ci95": [
+          0.027906976744186046,
+          0.06976744186046512
+        ],
+        "p_le_0": 0.0,
+        "n": 215
+      }
+    },
+    "efficientnet_lite0": {
+      "flood_iou_comb_minus_none": {
+        "mean": 0.04320789180381114,
+        "ci95": [
+          0.030008593572049654,
+          0.05736382564832791
+        ],
+        "p_le_0": 0.0,
+        "n": 209
+      },
+      "far_comb_minus_none": {
+        "mean": 0.062015503875968984,
+        "ci95": [
+          0.04031007751937985,
+          0.08372093023255814
+        ],
+        "p_le_0": 0.0,
+        "n": 215
+      }
+    },
+    "mobilevit_xxs": {
+      "flood_iou_comb_minus_none": {
+        "mean": 0.06696004689091065,
+        "ci95": [
+          0.04810955276086324,
+          0.08669018882749274
+        ],
+        "p_le_0": 0.0,
+        "n": 209
+      },
+      "far_comb_minus_none": {
+        "mean": 0.020155038759689922,
+        "ci95": [
+          -2.646461861025024e-19,
+          0.04186046511627907
+        ],
+        "p_le_0": 0.0291,
+        "n": 215
+      }
+    }
+  },
+  "teacher_inheritance": {
+    "mobilenetv3_small": {
+      "none": {
+        "p_fa_given_teacher_fa": 0.1366906474820144,
+        "p_fa_given_teacher_ok": 0.009881422924901186,
+        "n_teacher_fa": 139,
+        "n_teacher_ok": 506
+      },
+      "comb": {
+        "p_fa_given_teacher_fa": 0.33093525179856115,
+        "p_fa_given_teacher_ok": 0.017786561264822136,
+        "n_teacher_fa": 139,
+        "n_teacher_ok": 506
+      }
+    },
+    "efficientnet_lite0": {
+      "none": {
+        "p_fa_given_teacher_fa": 0.1223021582733813,
+        "p_fa_given_teacher_ok": 0.005928853754940711,
+        "n_teacher_fa": 139,
+        "n_teacher_ok": 506
+      },
+      "comb": {
+        "p_fa_given_teacher_fa": 0.31654676258992803,
+        "p_fa_given_teacher_ok": 0.03162055335968379,
+        "n_teacher_fa": 139,
+        "n_teacher_ok": 506
+      }
+    },
+    "mobilevit_xxs": {
+      "none": {
+        "p_fa_given_teacher_fa": 0.10071942446043165,
+        "p_fa_given_teacher_ok": 0.019762845849802372,
+        "n_teacher_fa": 139,
+        "n_teacher_ok": 506
+      },
+      "comb": {
+        "p_fa_given_teacher_fa": 0.2302158273381295,
+        "p_fa_given_teacher_ok": 0.009881422924901186,
+        "n_teacher_fa": 139,
+        "n_teacher_ok": 506
+      }
+    }
+  }
+}

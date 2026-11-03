@@ -19,6 +19,8 @@ This finding has two implications for the flood-segmentation literature:
 \item \textbf{Modern ImageNet pretraining is doing the work.} The 2026 wave of \texttt{timm}-pretrained lightweight backbones brings the no-KD baseline so high that compression strategies \emph{other than} distillation --- quantization, pruning, architecture choice --- dominate the deployment-relevant trade-offs. We recommend that authors investing in flood-segmentation compression budget their effort accordingly.
 \end{enumerate}
 
+The combined-corpus experiment (Section~\ref{sec:results-combined}) supports the headroom reading and adds a caveat. Where the teacher out-segments the no-KD students on flood pixels (0.781 vs.\ 0.695--0.754 flood-only IoU), combined KD closes most of the gap, with the gain significant for all three students. It also transmits the teacher's false alarms: distilled students fire on the teacher's false-alarm scenes more than twice as often as their no-KD counterparts. Distillation passes on what the teacher does, including its errors. A teacher should therefore be audited on the failure mode that matters for deployment, here false alarms on dry scenes, before it is used for distillation, not only on the headline IoU that selects it.
+
 \subsection{Per-Platform Deployment Recommendations}
 \label{sec:discussion-deployment}
 
@@ -34,7 +36,7 @@ We still do not recommend the teacher (UNet$+$EffB0) for deployment, but for a s
 
 Table~\ref{tab:t7-decision} consolidates these recommendations into a decision matrix, pairing each operational scenario with the configuration we recommend and the metric that decides it.
 
-All of these recommendations carry the zero-shot caveats of Sections~\ref{sec:results-ood} and~\ref{sec:results-zeroshot}: the artifacts are validated for in-domain, close-range RGB; FSSD-trained models false-alarm on the majority of water-free scenes and must be retrained on negative-image-bearing data (Section~\ref{sec:methods-data}) before \emph{unattended} monitoring use; and INT8 artifacts in particular should be re-validated on in-deployment-domain imagery, since their degradation worsens under distribution shift in a way that in-domain calibration metrics do not predict.
+All of these recommendations carry the zero-shot caveats of Sections~\ref{sec:results-ood} and~\ref{sec:results-zeroshot}: the artifacts are validated for in-domain, close-range RGB; FSSD-trained models false-alarm on the majority of water-free scenes and must be retrained on negative-image-bearing data before \emph{unattended} monitoring use (Section~\ref{sec:results-combined} shows that this retraining brings student false-alarm rates down to 3--9\%, and that no-KD students are the safer choice there); and INT8 artifacts in particular should be re-validated on in-deployment-domain imagery, since their degradation worsens under distribution shift in a way that in-domain calibration metrics do not predict.
 
 \input{tables/T7_decision_matrix}
 

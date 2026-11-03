@@ -24,6 +24,8 @@ def load_folds(root: Path) -> dict[str, dict]:
 
 def per_model(blocks: dict) -> dict[str, dict]:
     out = {"teacher": blocks["teacher"]}
+    if blocks.get("baseline_mobilenetv2"):
+        out["baseline_mobilenetv2"] = blocks["baseline_mobilenetv2"]
     out.update(blocks["students"])
     return out
 

@@ -19,6 +19,7 @@ We provide the following artifacts for reproducibility.
 \item \textbf{Per-fold metrics} in \texttt{results.json} (FP32) and \texttt{quantized.json} (INT8) under \texttt{code/runs/3fold/}; re-derivable by \texttt{run\_full\_experiment.py}.
 \item \textbf{Per-platform latency} in \texttt{lat\_m2.json} and \texttt{lat\_wasm.json}; re-derivable by \texttt{bench\_m2.py} and \texttt{bench.mjs} respectively.
 \item \textbf{Zero-shot evaluations} in \texttt{ood\_fold\{0,1,2\}.json} (Sen1Floods11) and \texttt{zero\_shot\_fold\{0,1,2\}.json} (AIFloodSense $+$ FloodNet test, per-image metrics incl.\ flood-only IoU and false-alarm rates); re-derivable by \texttt{eval\_ood.py} and \texttt{eval\_zero\_shot.py}. The FSSD$\leftrightarrow$combined duplicate-check report is \texttt{fssd\_overlap\_report.json}, re-derivable by \texttt{check\_fssd\_overlap.py}.
+\item \textbf{Combined-corpus retraining} (Section~\ref{sec:results-combined}) under \texttt{code/runs/combined/}: per-fold \texttt{results\_fold\{0,1,2\}.json} (re-derivable by \texttt{run\_full\_experiment.py --dataset combined} or \texttt{notebooks/floodlite\_combined\_kaggle.ipynb}), the three-fold aggregate \texttt{summary.json} (\texttt{aggregate\_combined.py}), and the per-image KD contrasts and teacher-inheritance analysis \texttt{stats\_combined.json} (\texttt{stats\_combined.py}). Checkpoints: 7 configurations $\times$ 3 folds $= 21$, $\sim 360$\,MB.
 \end{itemize}
 
 \paragraph{Environment.}
@@ -26,5 +27,5 @@ We provide the following artifacts for reproducibility.
 \item Random seed: 42, fixed in the \texttt{KFold} constructor (data splits) and the notebook preamble; training-time stochasticity (weight init, augmentation order) is not pinned and is reflected in cross-fold standard deviations.
 \item Software: Python 3.11; PyTorch 2.8 with CUDA 12.1 (Kaggle T4) or Apple-Silicon MPS (M2); \texttt{segmentation-models-pytorch} $\geq 0.4$; \texttt{timm} 1.0; \texttt{onnxruntime} 1.22.1 (M2 CPU; INT8 QDQ artifacts require $\geq 1.18$); \texttt{onnxruntime-web} 1.17.3 (browser).
 \item Hardware: training on a single Kaggle Tesla T4 (16\,GB); quantization and CPU latency on an Apple M2~Pro (10-core CPU, 16\,GB unified memory, macOS 25.2); WASM latency via Node.js~25.
-\item Estimated reproduction cost: $\sim 35$ Kaggle-T4 hours $+ \sim 2$ M2-CPU hours; wall-clock $\approx 3$ calendar days assuming no Kaggle queue.
+\item Estimated reproduction cost: $\sim 35$ Kaggle-T4 hours $+ \sim 2$ M2-CPU hours for the FSSD benchmark, plus $\sim 30$ Kaggle-T4 hours (three sessions of under 12\,h) for the combined-corpus retraining; wall-clock $\approx 3$ calendar days assuming no Kaggle queue.
 \end{itemize}

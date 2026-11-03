@@ -1,0 +1,32 @@
+% =====================================================================
+%  Table T10 -- Combined-dataset retraining (D2) vs FSSD-trained zero-shot
+%  Source of truth (combined-trained): code/runs/combined/summary.json
+%    (per-fold detail: results_fold{0,1,2}.json; aggregate_combined.py)
+%  Source of truth (FSSD-trained):     code/runs/3fold/zero_shot_3fold.json
+%    (same rows as Table T9; std there)
+% =====================================================================
+\begin{table*}[ht]
+\centering
+\caption{\textbf{Retraining on negative-image-bearing data removes the false-alarm failure.} Left: FSSD-trained models evaluated zero-shot (means of Table~\ref{tab:t9-zeroshot}; standard deviations there). Right: the same configurations retrained on the combined corpus (Kaggle Flood Area Segmentation $+$ FloodNet train$+$val, 2{,}057 images of which 855 are water-free; Section~\ref{sec:results-combined}), mean $\pm$ std over three folds. FloodNet test (424 images, 215 water-free) and AIFloodSense are never used for training or model selection in either regime; AIFloodSense has 94 images on the left and 93 on the right, after the corpus's duplicate filter removes one copy. Per-image macro metrics as in Table~\ref{tab:t9-zeroshot}; FAR is the fraction of water-free scenes with any predicted water (lower is better). All models FP32.}
+\label{tab:t10-combined}
+\small
+\setlength{\tabcolsep}{2pt}
+\begin{tabular}{llcccc@{\hskip 6pt}cccc}
+\toprule
+& & \multicolumn{4}{c}{\textbf{FSSD-trained (zero-shot)}} & \multicolumn{4}{c}{\textbf{Combined-trained}} \\
+\cmidrule(lr){3-6}\cmidrule(lr){7-10}
+& & \textbf{AIFS} & \multicolumn{3}{c}{\textbf{FloodNet test}} & \textbf{AIFS} & \multicolumn{3}{c}{\textbf{FloodNet test}} \\
+\cmidrule(lr){4-6}\cmidrule(lr){8-10}
+\textbf{Model} & \textbf{KD} & \textbf{IoU} & \textbf{IoU (all)} & \textbf{IoU (flood)} & \textbf{FAR} & \textbf{IoU} & \textbf{IoU (all)} & \textbf{IoU (flood)} & \textbf{FAR} \\
+\midrule
+Teacher (UNet$+$EffB0) & --   & 0.706 & 0.288 & 0.509 & 0.927 & 0.731 $\pm$ 0.011 & 0.783 $\pm$ 0.082 & 0.781 $\pm$ 0.003 & 0.216 $\pm$ 0.165 \\
+\midrule
+MobileNetV3-Small      & none & 0.698 & 0.285 & 0.506 & 0.929 & 0.713 $\pm$ 0.008 & 0.860 $\pm$ 0.023 & 0.754 $\pm$ 0.011 & 0.037 $\pm$ 0.036 \\
+                       & comb & 0.693 & 0.280 & 0.497 & 0.930 & 0.725 $\pm$ 0.012 & 0.848 $\pm$ 0.018 & 0.780 $\pm$ 0.014 & 0.085 $\pm$ 0.047 \\
+EfficientNet-Lite0     & none & 0.702 & 0.388 & 0.507 & 0.727 & 0.731 $\pm$ 0.005 & 0.854 $\pm$ 0.006 & 0.736 $\pm$ 0.015 & 0.031 $\pm$ 0.010 \\
+                       & comb & 0.690 & 0.399 & 0.503 & 0.702 & 0.739 $\pm$ 0.008 & 0.844 $\pm$ 0.031 & 0.779 $\pm$ 0.015 & 0.093 $\pm$ 0.060 \\
+MobileViT-XXS          & none & 0.723 & 0.253 & 0.512 & 1.000 & 0.738 $\pm$ 0.012 & 0.831 $\pm$ 0.017 & 0.695 $\pm$ 0.027 & 0.037 $\pm$ 0.009 \\
+                       & comb & 0.708 & 0.262 & 0.507 & 0.975 & 0.727 $\pm$ 0.006 & 0.854 $\pm$ 0.011 & 0.762 $\pm$ 0.018 & 0.057 $\pm$ 0.035 \\
+\bottomrule
+\end{tabular}
+\end{table*}
