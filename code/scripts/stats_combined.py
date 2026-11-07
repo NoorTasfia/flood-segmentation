@@ -48,6 +48,39 @@ def boot_ci(deltas: np.ndarray, n_boot: int = 10000, seed: int = 42) -> dict:
     }
 
 
+def _did(none_fa, comb_fa, t_fa) -> float:
+    eff = comb_fa.astype(float) - none_fa.astype(float)
+    return float(eff[t_fa].mean() - eff[~t_fa].mean())
+
+
+def did_boot(none_fa: np.ndarray, comb_fa: np.ndarray, t_fa: np.ndarray,
+             n_boot: int = 10000, seed: int = 42) -> dict:
+    """Difference-in-differences of the KD effect on false alarms.
+
+    (comb - none) on teacher-false-alarm cases minus (comb - none) on
+    teacher-correct cases. Arrays are [fold, image]; the bootstrap resamples
+    images (all three folds of an image move together), so the dependence
+    between an image's fold copies is respected.
+    """
+    rng = np.random.default_rng(seed)
+    n_img = none_fa.shape[1]
+    stats = []
+    for _ in range(n_boot):
+        idx = rng.integers(0, n_img, size=n_img)
+        tf = t_fa[:, idx]
+        if tf.all() or not tf.any():
+            continue
+        stats.append(_did(none_fa[:, idx], comb_fa[:, idx], tf))
+    stats = np.asarray(stats)
+    lo, hi = np.percentile(stats, [2.5, 97.5])
+    eff = comb_fa.astype(float) - none_fa.astype(float)
+    return {"did": _did(none_fa, comb_fa, t_fa), "ci95": [float(lo), float(hi)],
+            "p_le_0": float((stats <= 0).mean()),
+            "kd_effect_teacher_fa": float(eff[t_fa].mean()),
+            "kd_effect_teacher_ok": float(eff[~t_fa].mean()),
+            "n_images_clustered": int(n_img)}
+
+
 def load_test_iou(runs: Path) -> dict[str, np.ndarray]:
     """model -> array [fold, image] of per-image test IoU."""
     per: dict[str, list] = {}
@@ -100,6 +133,7 @@ def main() -> None:
                 "n_teacher_fa": int(t_fa.sum()),
                 "n_teacher_ok": int((~t_fa).sum()),
             }
+        inh["did"] = did_boot(fa[f"{s}_none"], fa[f"{s}_comb"], t_fa)
         out["teacher_inheritance"][s] = inh
 
     dest = Path(args.out) if args.out else runs / "stats_combined.json"
@@ -115,6 +149,9 @@ def main() -> None:
             i = out["teacher_inheritance"][s][kd]
             print(f"   {kd:4s} P(FA|teacher FA)={i['p_fa_given_teacher_fa']:.3f} "
                   f"(n={i['n_teacher_fa']})  P(FA|teacher OK)={i['p_fa_given_teacher_ok']:.3f} (n={i['n_teacher_ok']})")
+        d = out["teacher_inheritance"][s]["did"]
+        print(f"   DiD {d['did']:+.3f} [{d['ci95'][0]:+.3f},{d['ci95'][1]:+.3f}]  "
+              f"KD effect | teacher FA {d['kd_effect_teacher_fa']:+.3f}, | teacher OK {d['kd_effect_teacher_ok']:+.3f}")
     print(f"wrote {dest}")
 
 

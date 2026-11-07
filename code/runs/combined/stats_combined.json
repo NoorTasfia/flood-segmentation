@@ -77,6 +77,17 @@
         "p_fa_given_teacher_ok": 0.017786561264822136,
         "n_teacher_fa": 139,
         "n_teacher_ok": 506
+      },
+      "did": {
+        "did": 0.18633946597662582,
+        "ci95": [
+          0.11428480223755814,
+          0.26278727685249387
+        ],
+        "p_le_0": 0.0,
+        "kd_effect_teacher_fa": 0.19424460431654678,
+        "kd_effect_teacher_ok": 0.007905138339920948,
+        "n_images_clustered": 215
       }
     },
     "efficientnet_lite0": {
@@ -91,6 +102,17 @@
         "p_fa_given_teacher_ok": 0.03162055335968379,
         "n_teacher_fa": 139,
         "n_teacher_ok": 506
+      },
+      "did": {
+        "did": 0.1685529047118037,
+        "ci95": [
+          0.09257916926706256,
+          0.24642473075592194
+        ],
+        "p_le_0": 0.0,
+        "kd_effect_teacher_fa": 0.19424460431654678,
+        "kd_effect_teacher_ok": 0.025691699604743084,
+        "n_images_clustered": 215
       }
     },
     "mobilevit_xxs": {
@@ -105,6 +127,17 @@
         "p_fa_given_teacher_ok": 0.009881422924901186,
         "n_teacher_fa": 139,
         "n_teacher_ok": 506
+      },
+      "did": {
+        "did": 0.13937782580259903,
+        "ci95": [
+          0.06880969993246068,
+          0.21377195484916145
+        ],
+        "p_le_0": 0.0,
+        "kd_effect_teacher_fa": 0.12949640287769784,
+        "kd_effect_teacher_ok": -0.009881422924901186,
+        "n_images_clustered": 215
       }
     }
   }

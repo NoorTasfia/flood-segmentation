@@ -26,7 +26,7 @@ We adopt 3-fold cross-validation with a fixed random seed: \texttt{KFold(n\_spli
 \subsection{Teacher Model}
 \label{sec:methods-teacher}
 
-Our teacher is a UNet decoder with EfficientNet-B0 encoder~\cite{tan2019efficientnet}, initialised from ImageNet weights. While Karc{\i} \emph{et al.}~\cite{karci2026deep} use EfficientNet-B7 in their best-performing configuration, we deliberately choose B0 as our teacher for two reasons: first, B0 is significantly cheaper to train, fitting within free-tier GPU budgets (Kaggle T4 and Google Colab); second, B0 is itself representative of the strongest configurations realistically used in practice, and a successful distillation from B0 implies a successful distillation from any larger backbone in the same family. The teacher has approximately 6.25\,M parameters at $256{\times}256$ resolution.
+Our teacher is a UNet decoder with EfficientNet-B0 encoder~\cite{tan2019efficientnet}, initialised from ImageNet weights. While Karc{\i} \emph{et al.}~\cite{karci2026deep} use EfficientNet-B7 in their best-performing configuration, we deliberately choose B0 as our teacher for two reasons: first, B0 is significantly cheaper to train, fitting within free-tier GPU budgets (Kaggle T4 and Google Colab); second, B0 is itself representative of the strongest configurations realistically used in practice, and with only 663 training images a larger backbone is unlikely to provide additional headroom (Section~\ref{sec:results-teacher}). The teacher has approximately 6.25\,M parameters at $256{\times}256$ resolution.
 
 \subsection{Student Architectures and the MobileNetV2 Baseline}
 \label{sec:methods-students}
@@ -99,6 +99,6 @@ We use ONNX as the single deployment hub. The same \texttt{.onnx} artifact serve
 \item \textbf{Browser:} ONNX Runtime Web 1.17 with the WebAssembly SIMD execution provider, single-threaded. We benchmark from Node.js~25 rather than from a Chrome page because (a)~Node's WASM runtime and Chrome's WASM runtime produce numerically equivalent timings within $\pm 10\%$, and (b)~it removes the SharedArrayBuffer / COOP--COEP browser configuration as a measurement-environment variable.
 \end{itemize}
 
-INT8 deployment is currently restricted to the M2~Pro CPU target: ONNX Runtime Web 1.17 does not implement the QDQ-format INT8 Conv kernel, so the WASM INT8 column of Table~\ref{tab:t5-latency} reads ``n/a (upstream limitation)''. This is consistent with the ORT-Web roadmap (INT8 Conv is on the 1.18 milestone at time of writing) and is documented in our supplementary \texttt{lat\_wasm.json}.
+INT8 latency is reported for the M2~Pro CPU target only. Our INT8 QDQ artifacts embed an operator-set version that requires ONNX Runtime $\geq 1.18$; ONNX Runtime Web 1.17.3 failed to load them (the failures are recorded in our supplementary \texttt{lat\_wasm.json}), so the WASM INT8 column of Table~\ref{tab:t5-latency} reads ``n/a''. A newer ORT-Web release may run them; we have not re-measured.
 
 CoreML, TensorFlow Lite (XNNPACK), and Raspberry~Pi~4 deployment are deferred to a follow-up artifact release; for this paper, we restrict the per-platform benchmark to the two execution providers we can run with strict numerical reproducibility from a single laptop.

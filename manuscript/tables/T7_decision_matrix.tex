@@ -16,11 +16,11 @@
 \midrule
 Field laptop / tablet (Apple-Silicon CPU)
   & \textbf{EffLite0-UNet INT8} & 0.885 & 17\,ms (M2) & 5.2
-  & Fastest deployable operating point; the only student that INT8-quantizes stably ($\pm 0.015$). Shipped in our release. \\
+  & Fastest deployable operating point; the only student that INT8-quantizes stably ($\pm 0.015$). FSSD-trained, it false-alarms on 93\% of dry scenes (Table~\ref{tab:t9-zeroshot}): analyst-in-the-loop use only. \\
 \addlinespace
 Browser / citizen-science web portal
   & MNV3-S-UNet FP32 & 0.927 & 133\,ms (WASM) & 13.8
-  & Fastest under single-threaded WASM SIMD; MobileViT-XXS FP32 (149\,ms, IoU 0.937) if accuracy matters more. No INT8 in ORT-Web~1.17. \\
+  & Fastest under single-threaded WASM SIMD; MobileViT-XXS FP32 (149\,ms, IoU 0.937) if accuracy matters more. INT8 not measured in the browser (ORT-Web~1.17.3). \\
 \addlinespace
 Maximum-accuracy off-line / human-in-the-loop
   & MobileViT-XXS-UNet FP32 & 0.937 & 28\,ms (M2) & 12.0
@@ -28,7 +28,7 @@ Maximum-accuracy off-line / human-in-the-loop
 \addlinespace
 Unattended monitoring (mostly dry scenes)
   & EffLite0-UNet FP32, no KD & 0.736\textsuperscript{$\ddagger$} & 34\,ms (M2) & 19.8
-  & Must be retrained with water-free images: FSSD-trained models false-alarm on 70--100\% of dry scenes, combined-trained Lite0 on 3\% (Table~\ref{tab:t10-combined}). Skip KD: it inherits the teacher's false alarms. \\
+  & Must be retrained with water-free images: FSSD-trained models false-alarm on 70--100\% of dry scenes, combined-trained Lite0 on 3\% (Table~\ref{tab:t10-combined}). Lite0 over MobileNetV3-S for its INT8 stability on FSSD. Skip KD: it inherits the teacher's false alarms. \\
 \addlinespace
 Cross-sensor / satellite optical
   & \emph{retrain / domain-adapt} & 0.16\textsuperscript{$\dagger$} & --- & ---
