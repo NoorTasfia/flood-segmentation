@@ -1,0 +1,26 @@
+% =====================================================================
+%  Table T11 -- INT8 PTQ of the combined-trained students (D3)
+%  Source of truth: code/runs/combined/quantized.json
+%    (scripts/quantize_combined.py; ONNX Runtime 1.22.1)
+% =====================================================================
+\begin{table*}[ht]
+\centering
+\caption{\textbf{INT8 post-training quantization of the combined-trained students} (same static-QDQ recipe as Table~\ref{tab:t4-quant}: per-tensor scales, Percentile-99.999\% calibration on 80 training images of the fold). FP32 values are the ONNX exports of the Table~\ref{tab:t10-combined} checkpoints (means over three folds); INT8 values are mean $\pm$ std over the three folds. Val is the held-out Kaggle fold (54--55 flood images); FloodNet test and AIFloodSense as in Table~\ref{tab:t10-combined}. A low INT8 FAR on a collapsed model (e.g.\ MobileViT-XXS, no KD) reflects near-empty predictions, not good rejection; read it with the flood-only IoU.}
+\label{tab:t11-combined-int8}
+\small
+\setlength{\tabcolsep}{2.5pt}
+\begin{tabular}{llcc@{\hskip 6pt}cc@{\hskip 6pt}cc@{\hskip 6pt}cc}
+\toprule
+& & \multicolumn{2}{c}{\textbf{Val IoU}} & \multicolumn{2}{c}{\textbf{FloodNet IoU (flood)}} & \multicolumn{2}{c}{\textbf{FloodNet FAR}} & \multicolumn{2}{c}{\textbf{AIFS IoU}} \\
+\cmidrule(lr){3-4}\cmidrule(lr){5-6}\cmidrule(lr){7-8}\cmidrule(lr){9-10}
+\textbf{Model} & \textbf{KD} & FP32 & INT8 & FP32 & INT8 & FP32 & INT8 & FP32 & INT8 \\
+\midrule
+MobileNetV3-Small  & none & 0.778 & 0.458 $\pm$ 0.176 & 0.754 & 0.215 $\pm$ 0.176 & 0.037 & 0.584 $\pm$ 0.512 & 0.713 & 0.445 $\pm$ 0.159 \\
+                   & comb & 0.783 & 0.477 $\pm$ 0.231 & 0.780 & 0.324 $\pm$ 0.119 & 0.085 & 0.966 $\pm$ 0.059 & 0.725 & 0.491 $\pm$ 0.179 \\
+\textbf{EfficientNet-Lite0} & none & 0.781 & \textbf{0.751 $\pm$ 0.032} & 0.736 & \textbf{0.589 $\pm$ 0.086} & 0.031 & \textbf{0.048 $\pm$ 0.047} & 0.731 & \textbf{0.689 $\pm$ 0.024} \\
+                   & comb & 0.784 & 0.753 $\pm$ 0.033 & 0.779 & 0.632 $\pm$ 0.018 & 0.093 & 0.316 $\pm$ 0.250 & 0.739 & 0.693 $\pm$ 0.027 \\
+MobileViT-XXS      & none & 0.780 & 0.193 $\pm$ 0.204 & 0.695 & 0.123 $\pm$ 0.176 & 0.037 & 0.090 $\pm$ 0.156 & 0.738 & 0.160 $\pm$ 0.195 \\
+                   & comb & 0.801 & 0.197 $\pm$ 0.200 & 0.762 & 0.126 $\pm$ 0.159 & 0.057 & 0.499 $\pm$ 0.500 & 0.727 & 0.150 $\pm$ 0.140 \\
+\bottomrule
+\end{tabular}
+\end{table*}
