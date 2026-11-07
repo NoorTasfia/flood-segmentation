@@ -28,7 +28,7 @@ Maximum-accuracy off-line / human-in-the-loop
 \addlinespace
 Unattended monitoring (mostly dry scenes)
   & EffLite0-UNet FP32, no KD & 0.736\textsuperscript{$\ddagger$} & 34\,ms (M2) & 19.8
-  & Must be retrained with water-free images: FSSD-trained models false-alarm on 70--100\% of dry scenes, combined-trained Lite0 on 3\% (Table~\ref{tab:t10-combined}). Lite0 over MobileNetV3-S for its INT8 stability on FSSD. Skip KD: it inherits the teacher's false alarms. \\
+  & Must be retrained with water-free images: FSSD-trained models false-alarm on 70--100\% of dry scenes, combined-trained Lite0 on 3\% (Table~\ref{tab:t10-combined}). Lite0 over MobileNetV3-S because it alone stays usable in INT8 (FAR 0.048, flood IoU 0.589; Table~\ref{tab:t11-combined-int8}). Skip KD: it inherits the teacher's false alarms. \\
 \addlinespace
 Cross-sensor / satellite optical
   & \emph{retrain / domain-adapt} & 0.16\textsuperscript{$\dagger$} & --- & ---
