@@ -29,13 +29,13 @@ Keep this open next to https://www.editorialmanager.com/jidr/ while submitting. 
 ## 2. Title
 
 ```
-FloodLite: A Multi-Platform Edge-Deployment Benchmark for Lightweight Flood Segmentation
+FloodLite: A CPU-and-Browser Edge-Deployment Benchmark for Lightweight Flood Segmentation
 ```
 
 Short title (if asked, ≤ 70 chars):
 
 ```
-A Multi-Platform Edge Benchmark for Lightweight Flood Segmentation
+A CPU-and-Browser Edge Benchmark for Lightweight Flood Segmentation
 ```
 
 ---
@@ -117,7 +117,7 @@ The authors declare no conflict of interest.
 ## 11. Data Availability (paste)
 
 ```
-The Flood Semantic Segmentation Dataset (FSSD) is publicly available at https://www.kaggle.com/datasets/lihuayang111265/flood-semantic-segmentation-dataset. All trained models, training code, and deployment scripts produced for this study are available at https://github.com/m-ibrahim-khalil/flood-segmentation (MIT licence; Zenodo DOI 10.5281/zenodo.NNNNNNN). The Sen1Floods11 dataset, used in preliminary out-of-distribution preparation, is available at https://github.com/cloudtostreet/Sen1Floods11 (CC-BY 4.0).
+The Flood Semantic Segmentation Dataset (FSSD) is publicly available at https://www.kaggle.com/datasets/lihuayang111265/flood-semantic-segmentation-dataset. All trained models, training code, and deployment scripts produced for this study are available at https://github.com/NoorTasfia/flood-segmentation (MIT licence; Zenodo DOI 10.5281/zenodo.NNNNNNN). The Sen1Floods11 dataset, used in preliminary out-of-distribution preparation, is available at https://github.com/cloudtostreet/Sen1Floods11 (CC-BY 4.0).
 ```
 
 (Substitute the real Zenodo DOI.)

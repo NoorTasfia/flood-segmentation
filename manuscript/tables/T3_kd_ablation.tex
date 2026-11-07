@@ -4,12 +4,13 @@
 % =====================================================================
 \begin{table}[ht]
 \centering
-\caption{\textbf{KD ablation on the best student (MobileViT-XXS).} Wilcoxon two-sided; $n=3$ folds gives a minimum reportable $p \approx 0.25$.}
+\caption{\textbf{KD ablation on the best student (MobileViT-XXS).} Wilcoxon two-sided; $n=3$ folds gives a minimum reportable $p \approx 0.25$. $\Delta$IoU is relative to no KD.}
 \label{tab:t3-kd-ablation}
 \small
+\setlength{\tabcolsep}{4pt}
 \begin{tabular}{lccc}
 \toprule
-\textbf{KD config} & \textbf{IoU (mean $\pm$ std)} & \textbf{$\Delta$ IoU vs.\ none} & \textbf{Wilcoxon $p$} \\
+\textbf{KD} & \textbf{IoU (mean $\pm$ std)} & \textbf{$\Delta$IoU} & \textbf{Wilcoxon $p$} \\
 \midrule
 none      & 0.9367 $\pm$ 0.0055 & ---      & --- \\
 resp      & 0.9326 $\pm$ 0.0060 & $-0.0041$ & n/a \\

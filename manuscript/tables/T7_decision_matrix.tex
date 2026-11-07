@@ -6,11 +6,11 @@
 % =====================================================================
 \begin{table*}[ht]
 \centering
-\caption{\textbf{Deployment decision matrix.} Recommended configuration per operational scenario, with the deciding metrics. All values are drawn from Tables~\ref{tab:t1-footprints}, \ref{tab:t2-segmentation}, \ref{tab:t4-quant}, \ref{tab:t5-latency}, and~\ref{tab:t6-ood}; this table re-presents the Section~\ref{sec:discussion-deployment} recommendations as an at-a-glance practitioner reference and introduces no new experiments. Latency is p50 on the platform relevant to each scenario (Apple~M2~Pro ORT-CPU, or browser WASM SIMD).}
+\caption{\textbf{Deployment decision matrix.} Recommended configuration per operational scenario, with the deciding metrics. All values are drawn from Tables~\ref{tab:t1-footprints}, \ref{tab:t2-segmentation}, \ref{tab:t4-quant}, \ref{tab:t5-latency}, \ref{tab:t6-ood}, and~\ref{tab:t10-combined}; this table re-presents the Section~\ref{sec:discussion-deployment} recommendations as an at-a-glance practitioner reference and introduces no new experiments. Latency is p50 on the platform relevant to each scenario (Apple~M2~Pro ORT-CPU, or browser WASM SIMD).}
 \label{tab:t7-decision}
 \small
 \setlength{\tabcolsep}{4pt}
-\begin{tabular}{p{2.9cm}lcccp{4.5cm}}
+\begin{tabular}{p{2.9cm}lcccp{3.9cm}}
 \toprule
 \textbf{Deployment scenario} & \textbf{Recommended} & \textbf{IoU} & \textbf{Latency (p50)} & \textbf{Size (MB)} & \textbf{Rationale / caveat} \\
 \midrule
@@ -26,11 +26,15 @@ Maximum-accuracy off-line / human-in-the-loop
   & MobileViT-XXS-UNet FP32 & 0.937 & 28\,ms (M2) & 12.0
   & Highest IoU of any configuration; FP32 only (its INT8 collapses, Table~\ref{tab:t4-quant}). \\
 \addlinespace
+Unattended monitoring (mostly dry scenes)
+  & EffLite0-UNet FP32, no KD & 0.736\textsuperscript{$\ddagger$} & 34\,ms (M2) & 19.8
+  & Must be retrained with water-free images: FSSD-trained models false-alarm on 70--100\% of dry scenes, combined-trained Lite0 on 3\% (Table~\ref{tab:t10-combined}). Skip KD: it inherits the teacher's false alarms. \\
+\addlinespace
 Cross-sensor / satellite optical
   & \emph{retrain / domain-adapt} & 0.16\textsuperscript{$\dagger$} & --- & ---
   & No FSSD-trained model transfers zero-shot (Table~\ref{tab:t6-ood}); requires domain adaptation or in-sensor training data. \\
 \bottomrule
 \end{tabular}
 \\[3pt]
-{\footnotesize \textsuperscript{$\dagger$}Zero-shot Sen1Floods11 IoU; all models $\approx 0.16$ (Section~\ref{sec:results-ood}).}
+{\footnotesize \textsuperscript{$\dagger$}Zero-shot Sen1Floods11 IoU; all models $\approx 0.16$ (Section~\ref{sec:results-ood}). \textsuperscript{$\ddagger$}Flood-only IoU on the FloodNet test split after combined-corpus retraining (Section~\ref{sec:results-combined}); not comparable with the FSSD IoUs above.}
 \end{table*}

@@ -6,7 +6,7 @@
 # Prerequisites (one-time, done outside this script):
 #   1. Sign in to Zenodo (https://zenodo.org/) with your GitHub account.
 #   2. Visit https://zenodo.org/account/settings/github/ and flip the
-#      toggle next to "m-ibrahim-khalil/flood-segmentation" to ON.
+#      toggle next to "NoorTasfia/flood-segmentation" to ON.
 #   3. (Optional) Add your ORCID at https://zenodo.org/account/settings/profile/
 #      and fill it into the empty `orcid` field of .zenodo.json before
 #      running this script.
@@ -23,11 +23,11 @@
 #     from this tag, and (b) watch the Zenodo DOI appear.
 #
 # After this script finishes:
-#   1. Visit https://github.com/m-ibrahim-khalil/flood-segmentation/releases/new?tag=v1.0-ijdrr
+#   1. Visit https://github.com/NoorTasfia/flood-segmentation/releases/new?tag=v1.0-ijdrr
 #      and click "Publish release" with the suggested release notes
 #      (this script writes them to /tmp/floodlite_release_notes.md).
 #   2. Within ~5 minutes the DOI will appear at
-#      https://zenodo.org/account/settings/github/repository/m-ibrahim-khalil/flood-segmentation
+#      https://zenodo.org/account/settings/github/repository/NoorTasfia/flood-segmentation
 #   3. Copy the DOI (form 10.5281/zenodo.NNNNNNN) into:
 #         - manuscript/sections/09_appendix_reproducibility.tex
 #         - manuscript/cover_letter.tex
@@ -157,13 +157,13 @@ cat <<EOF
    Tag pushed. Now do the manual web steps:
 
    1. Create the GitHub Release:
-        https://github.com/m-ibrahim-khalil/flood-segmentation/releases/new?tag=$TAG_NAME
+        https://github.com/NoorTasfia/flood-segmentation/releases/new?tag=$TAG_NAME
 
       Paste the contents of $RELEASE_NOTES into the release description.
       Click "Publish release".
 
    2. The Zenodo GitHub webhook will fire automatically. Watch:
-        https://zenodo.org/account/settings/github/repository/m-ibrahim-khalil/flood-segmentation
+        https://zenodo.org/account/settings/github/repository/NoorTasfia/flood-segmentation
 
       The DOI will appear there within ~5 minutes.
 

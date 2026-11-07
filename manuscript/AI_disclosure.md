@@ -1,6 +1,6 @@
 # AI Usage Disclosure
 
-**Manuscript.** FloodLite: A Multi-Platform Edge-Deployment Benchmark for Lightweight Flood Segmentation.
+**Manuscript.** FloodLite: A CPU-and-Browser Edge-Deployment Benchmark for Lightweight Flood Segmentation.
 **Authors.** Tasfia Noor Chawdhury; Md Ibrahim Khalil (corresponding, ibrahim@sensa.no); Md Ikramul Haque.
 **Target venue.** Elsevier International Journal of Disaster Risk Reduction (IJDRR), primary.
 **Statement prepared.** 2026-05-16. To be re-confirmed at submission.

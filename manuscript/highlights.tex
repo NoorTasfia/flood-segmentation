@@ -13,11 +13,11 @@
 \begin{center}\Large\textbf{Highlights}\end{center}
 
 \begin{itemize}
-\item First multi-platform edge-deployment benchmark for flood segmentation.
-\item Negative-KD: ImageNet-pretrained students match teacher without distillation.
-\item INT8 PTQ stability is architecture-dependent; ReLU6 backbones are safe defaults.
-\item EfficientNet-Lite0 INT8 ONNX: 58 FPS on M2 CPU, 6 FPS in WASM, 95\% IoU.
-\item All code, ONNX exports, and a Zenodo-archived release are publicly available.
+\item CPU and browser benchmark of three lightweight flood-segmentation UNets.
+\item On saturated FSSD, pretrained students match the teacher without distillation.
+\item INT8 quantization is architecture-dependent: Lite0 holds, two backbones collapse.
+\item FSSD models false-alarm on 72--100\% of dry scenes; retraining cuts this to 3--9\%.
+\item On harder data, distillation lifts flood IoU but copies teacher false alarms.
 \end{itemize}
 
 \end{document}

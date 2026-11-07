@@ -7,10 +7,12 @@
 \caption{\textbf{Post-training INT8 quantization} (static QDQ, Percentile-99.999\% calibration, 80 train images). EfficientNet-Lite0 (highlighted) is the recommended deployable configuration; the other two students suffer architecture-driven PTQ collapse (Section~\ref{sec:results-quant}). For the two collapsing students the INT8 IoU is strongly multi-modal across folds (MobileNetV3-Small: $0.772 / 0.0001 / 0.657$; MobileViT-XXS: $0.718 / 0.464 / 0.244$), so their mean\,$\pm$\,std is an instability indicator, not a central tendency.}
 \label{tab:t4-quant}
 \small
-\setlength{\tabcolsep}{5pt}
-\begin{tabular}{lccccccc}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lcccccc}
 \toprule
-\textbf{Model} & \textbf{FP32 IoU} & \textbf{INT8 IoU} & \textbf{$\Delta$ IoU} & \textbf{FP32 ONNX (MB)} & \textbf{INT8 ONNX (MB)} & \textbf{Size reduction} \\
+& & & & \multicolumn{2}{c}{\textbf{ONNX size (MB)}} & \\
+\cmidrule(lr){5-6}
+\textbf{Model} & \textbf{FP32 IoU} & \textbf{INT8 IoU} & \textbf{$\Delta$ IoU} & \textbf{FP32} & \textbf{INT8} & \textbf{Reduction} \\
 \midrule
 MobileNetV3-Small   & 0.9269 $\pm$ 0.0043 & 0.4762 $\pm$ 0.3399 & $-0.4507$ & 13.8 & 3.7 & $3.69\times$ \\
 \textbf{EfficientNet-Lite0} & \textbf{0.9277 $\pm$ 0.0047} & \textbf{0.8851 $\pm$ 0.0149} & $\boldsymbol{-0.0426}$ & \textbf{19.8} & \textbf{5.2} & $\boldsymbol{3.83\times}$ \\
