@@ -4,10 +4,11 @@
 % =====================================================================
 \begin{table*}[ht]
 \centering
-\caption{\textbf{Per-platform inference latency.} Single-image batches, $256{\times}256$ input. M2~Pro and browser WASM both consume the same \texttt{.onnx} artifact under different execution providers. INT8 WASM rows are n/a: our INT8 QDQ artifacts require ONNX Runtime $\geq 1.18$, and ONNX Runtime Web 1.17.3 failed to load them. \textsuperscript{a}Teacher timed under the same ONNX Runtime CPU execution provider as the students (37.6\,ms p50). Under PyTorch eager CPU the same teacher is 274\,ms ($7.3\times$ slower); reporting that PyTorch figure against ORT-CPU students would inflate the apparent teacher-vs-student speedup. On a common ORT-CPU backend the FP32 students are only $1.1$--$1.9\times$ faster than the teacher, and the recommended EfficientNet-Lite0 INT8 is $2.2\times$ faster. All timing rows trace to \texttt{lat\_m2.json} (student rows via \texttt{bench\_m2.py}; teacher ORT-CPU row via \texttt{bench\_teacher\_ort.py}); see \texttt{runs/3fold/PROVENANCE.md}.}
+\caption{\textbf{Per-platform inference latency.} Single-image batches, $256{\times}256$ input. M2~Pro and browser WASM both consume the same \texttt{.onnx} artifact under different execution providers. INT8 WASM rows are n/a on this host: our INT8 QDQ artifacts require ONNX Runtime $\geq 1.18$, and ONNX Runtime Web 1.17.3 failed to load them; Table~\ref{tab:t13-host2} measures them under ORT-Web 1.22.0 on a second host. \textsuperscript{a}Teacher timed under the same ONNX Runtime CPU execution provider as the students, under ORT 1.17 (37.6\,ms p50; 36.7\,ms when re-timed under the students' ORT 1.22.1). Under PyTorch eager CPU the same teacher is 274\,ms ($7.3\times$ slower); reporting that PyTorch figure against ORT-CPU students would inflate the apparent teacher-vs-student speedup. On a common ORT-CPU backend the FP32 students are only $1.1$--$1.9\times$ faster than the teacher, and the recommended EfficientNet-Lite0 INT8 is $2.2\times$ faster. The INT8 teacher of Table~\ref{tab:t12-ptq-mechanism} was not timed on this host. All timing rows trace to \texttt{lat\_m2.json} (student rows via \texttt{bench\_m2.py}; teacher ORT-CPU row via \texttt{bench\_teacher\_ort.py}); see \texttt{runs/3fold/PROVENANCE.md}.}
 \label{tab:t5-latency}
 \small
 \setlength{\tabcolsep}{5pt}
+\begin{adjustbox}{max width=\textwidth}
 \begin{tabular}{lcccccc}
 \toprule
 \multirow{2}{*}{\textbf{Model}}
@@ -26,4 +27,5 @@ MobileViT-XXS FP32                 &  28.3 &  32.8 & 35.4  & 149.4 & 159.8 & 6.7
 MobileViT-XXS INT8                 &  21.6 &  25.0 & 46.3  & \multicolumn{3}{c}{n/a (ORT-Web 1.17 limitation)} \\
 \bottomrule
 \end{tabular}
+\end{adjustbox}
 \end{table*}

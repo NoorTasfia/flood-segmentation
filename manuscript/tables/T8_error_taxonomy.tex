@@ -6,10 +6,11 @@
 % =====================================================================
 \begin{table*}[ht]
 \centering
-\caption{\textbf{Error taxonomy for FSSD flood segmentation.} Four failure classes observed across this study, their mechanism, the direction of the resulting error (operationally, false negatives are the costlier direction, Section~\ref{sec:discussion-asymmetry}), the models affected, and the mitigation each implies. Categories are qualitative, synthesised from Sections~\ref{sec:results-quant}, \ref{sec:results-ood}, and~\ref{sec:discussion-failures}; we do not claim per-class frequencies.}
+\caption{\textbf{Error taxonomy for FSSD flood segmentation.} Four failure classes observed across this study, their mechanism, the direction of the resulting error (which direction costs more depends on the use: false negatives in event-time mapping, false positives in unattended monitoring, Section~\ref{sec:discussion-asymmetry}), the models affected, and the mitigation each implies. Categories are qualitative, synthesised from Sections~\ref{sec:results-quant}, \ref{sec:results-ood}, and~\ref{sec:discussion-failures}; we do not claim per-class frequencies.}
 \label{tab:t8-taxonomy}
 \small
 \setlength{\tabcolsep}{4pt}
+\begin{adjustbox}{max width=\textwidth}
 \begin{tabular}{p{2.6cm}p{4.2cm}p{2.1cm}p{2.4cm}p{3.2cm}}
 \toprule
 \textbf{Failure class} & \textbf{Mechanism} & \textbf{Error type} & \textbf{Affected models} & \textbf{Mitigation} \\
@@ -33,10 +34,11 @@ Cross-sensor distribution shift
   & Domain adaptation or in-sensor retraining \\
 \addlinespace
 INT8 PTQ instability
-  & Unbounded HardSwish tail / attention dynamic range exceed static-QDQ calibration
-  & Model-level collapse ($\Delta$IoU\,$\approx-0.45$, high cross-fold variance)
-  & MobileNetV3-Small, MobileViT-XXS
-  & QAT or a ReLU6-bounded backbone (EffLite0 unaffected) \\
+  & A single per-tensor weight scale cannot cover the per-channel weight ranges of these lightweight encoders; in MobileViT-XXS the early high-resolution convolutions also fail under per-channel scales (attention blocks quantize cleanly)
+  & Model-level collapse ($\Delta$IoU $-0.22$ to $-0.92$, fold-dependent)
+  & MobileNetV3-Small, MobileViT-XXS, teacher (per-tensor); MobileViT-XXS only (per-channel)
+  & Per-channel weight scales (fixes every CNN); keep MobileViT-XXS's early convolutions FP32, or QAT \\
 \bottomrule
 \end{tabular}
+\end{adjustbox}
 \end{table*}

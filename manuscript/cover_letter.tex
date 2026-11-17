@@ -8,8 +8,8 @@
 \usepackage[hidelinks]{hyperref}
 \usepackage{parskip}
 
-\signature{Md Ibrahim Khalil\\Sensa AS, Norway\\ibrahim@sensa.no\\On behalf of all authors}
-\address{Md Ibrahim Khalil\\Sensa AS\\Oslo, Norway\\ibrahim@sensa.no}
+\signature{Tasfia Noor Chowdhury and Md Ibrahim Khalil (corresponding authors)\\University of Dhaka, Bangladesh\\tasfiaa.chowdhury@gmail.com; mik858692@gmail.com\\On behalf of all authors}
+\address{Tasfia Noor Chowdhury, Md Ibrahim Khalil\\University of Dhaka\\Dhaka 1000, Bangladesh\\tasfiaa.chowdhury@gmail.com; mik858692@gmail.com}
 
 \begin{document}
 \begin{letter}{The Editor\\\emph{International Journal of Disaster Risk Reduction}\\Elsevier}
@@ -18,15 +18,15 @@
 
 We are pleased to submit our manuscript, \emph{FloodLite: A CPU-and-Browser Edge-Deployment Benchmark for Lightweight Flood Segmentation}, for consideration as a Research Article in the \emph{International Journal of Disaster Risk Reduction}.
 
-Flood-segmentation models are almost always judged by accuracy on a benchmark. The responders who would use them run laptops, tablets and browsers, where latency, quantization behaviour and false alarms decide whether a model is usable. Apart from timings on NVIDIA Jetson boards, the flood-segmentation literature does not, to our knowledge, report laptop-CPU or in-browser latency together with quantization stability. Our manuscript measures them for three lightweight UNet students and a UNet$+$EfficientNet-B0 teacher, on an Apple Silicon CPU and in browser WebAssembly, in FP32 and INT8.
+Flood-segmentation models are almost always judged by accuracy on a benchmark. The responders who would use them run laptops, tablets and browsers, where latency, quantization behaviour and false alarms decide whether a model is usable. Apart from timings on NVIDIA Jetson boards, the flood-segmentation literature does not, to our knowledge, report laptop-CPU or in-browser latency together with quantization stability. Our manuscript measures them for three compact UNets and a larger UNet$+$EfficientNet-B0 reference network, on an Apple Silicon CPU, an x86 desktop CPU and in browser WebAssembly, in FP32 and INT8.
 
 Three findings make the work relevant to disaster-risk practice:
 
 \textbf{1.~Flood-only training data produces models that cannot say ``no flood''.} The public Flood Semantic Segmentation Dataset (FSSD) contains no water-free images. Evaluated zero-shot on overlap-verified external data, every FSSD-trained FP32 model predicts water on 70--100\% of dry scenes, a failure invisible to every FSSD metric and disqualifying for unattended monitoring. Retraining on a combined public corpus that includes water-free images cuts student false-alarm rates to 3--9\%.
 
-\textbf{2.~Distillation helps only with headroom, and it transmits the teacher's errors.} On saturated FSSD, no response-, feature- or combined-distillation configuration improves on the no-distillation baseline. On the less saturated combined corpus, combined distillation raises flood-only IoU significantly for all three students, but distilled students also false-alarm on the teacher's false-alarm scenes more than twice as often as undistilled ones. Teachers should be audited for the deployment-relevant failure before they are used for distillation.
+\textbf{2.~Distillation helps only with headroom, and it transmits the teacher's errors.} On saturated FSSD, no response-, feature- or combined-distillation configuration improves on the no-distillation baseline. On the less saturated combined corpus, combined distillation raises flood-only IoU significantly for all three compact networks, but distilled networks also false-alarm on the reference network's false-alarm scenes 2.3--2.6 times as often as undistilled ones. A network should be audited for the deployment-relevant failure before it is used as a distillation source.
 
-\textbf{3.~INT8 post-training quantization is architecture-dependent.} Under one static-QDQ recipe, EfficientNet-Lite0 loses 0.043 IoU while MobileNetV3-Small (HardSwish) and MobileViT-XXS (attention) collapse by 0.45--0.46 IoU, and quantized models degrade further under domain shift. The recommended configuration, EfficientNet-Lite0-UNet INT8 on ONNX Runtime CPU, runs at 58~FPS on a 2023 laptop CPU, $2.2\times$ faster and about $4\times$ smaller than the teacher on the same runtime; in the browser, FP32 students reach 6--7.5~FPS (INT8 was not measured there).
+\textbf{3.~The INT8 collapse that practitioners see is mostly the default recipe, and the INT8 speed-up depends on the CPU.} Under the default per-tensor static-QDQ recipe, EfficientNet-Lite0 loses 0.043 IoU while MobileNetV3-Small, MobileViT-XXS and the reference network lose 0.2--0.9 IoU with fold-dependent outcomes, and quantized models degrade further under domain shift. A controlled ablation shows that per-channel weight scales alone recover every convolutional network (MobileNetV3-Small to $-0.023$ IoU, the reference network to $-0.009$), on both training corpora and under zero-shot transfer, while MobileViT-XXS keeps a 0.22--0.33 loss that sits in its early convolutions, not its attention blocks. The recommended configuration, EfficientNet-Lite0-UNet INT8 on ONNX Runtime CPU, runs at 58~FPS on a 2023 Apple-Silicon laptop, $2.2\times$ faster and about $4\times$ smaller than the reference network on the same runtime, but the same INT8 artifacts run $2.8$--$3.0\times$ slower than FP32 on an x86 desktop CPU; in the browser, FP32 students reach 6--7.5~FPS and INT8 adds a further $1.3$--$1.4\times$ under ONNX Runtime Web~1.22.
 
 The work fits IJDRR's scope because its contribution is deployment evidence for disaster-response practice rather than a new network design: the quantities we report are the ones a humanitarian data-science team needs to decide whether, where and how a flood-segmentation model can be fielded, including the data it must be trained on to be trusted unattended.
 

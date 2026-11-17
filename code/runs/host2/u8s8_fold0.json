@@ -1,0 +1,14 @@
+{
+  "_meta": {
+    "recipe": "per-channel QDQ INT8, weights QInt8, activations QUInt8 (U8S8), Percentile 99.999, same 80 fold-0 calibration images as ptq_mechanism.json; onnxruntime 1.22.1",
+    "fold": 0,
+    "metric": "batch-mean IoU over fold-0 val loader",
+    "note": "S8S8 (signed activations) comparison values are ptq_mechanism.json fold_0 'pc' variant"
+  },
+  "iou_u8s8": {
+    "efficientnet_lite0": 0.9082,
+    "teacher": 0.9132,
+    "mobilenetv3_small": 0.9031,
+    "mobilevit_xxs": 0.7013
+  }
+}

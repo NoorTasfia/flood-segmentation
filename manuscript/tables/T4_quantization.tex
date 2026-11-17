@@ -4,10 +4,11 @@
 % =====================================================================
 \begin{table*}[ht]
 \centering
-\caption{\textbf{Post-training INT8 quantization} (static QDQ, Percentile-99.999\% calibration, 80 train images). EfficientNet-Lite0 (highlighted) is the recommended deployable configuration; the other two students suffer architecture-driven PTQ collapse (Section~\ref{sec:results-quant}). For the two collapsing students the INT8 IoU is strongly multi-modal across folds (MobileNetV3-Small: $0.772 / 0.0001 / 0.657$; MobileViT-XXS: $0.718 / 0.464 / 0.244$), so their mean\,$\pm$\,std is an instability indicator, not a central tendency.}
+\caption{\textbf{Post-training INT8 quantization under the per-tensor recipe} (static QDQ, per-tensor weight and activation scales, Percentile-99.999\% calibration, 80 train images). EfficientNet-Lite0 (highlighted) is the recommended deployable configuration; the other two students collapse under this recipe. For the two collapsing students the INT8 IoU is strongly multi-modal across folds (MobileNetV3-Small: $0.772 / 0.0001 / 0.657$; MobileViT-XXS: $0.718 / 0.464 / 0.244$), so their mean\,$\pm$\,std is an instability indicator, not a central tendency. Table~\ref{tab:t12-ptq-mechanism} shows that per-channel weight scales remove the MobileNetV3-Small collapse and most of the MobileViT-XXS loss comes from its early convolutions (Section~\ref{sec:results-quant}).}
 \label{tab:t4-quant}
 \small
 \setlength{\tabcolsep}{4pt}
+\begin{adjustbox}{max width=\textwidth}
 \begin{tabular}{lcccccc}
 \toprule
 & & & & \multicolumn{2}{c}{\textbf{ONNX size (MB)}} & \\
@@ -19,4 +20,5 @@ MobileNetV3-Small   & 0.9269 $\pm$ 0.0043 & 0.4762 $\pm$ 0.3399 & $-0.4507$ & 13
 MobileViT-XXS       & 0.9367 $\pm$ 0.0055 & 0.4752 $\pm$ 0.1936 & $-0.4616$ & 12.0 & 3.5 & $3.42\times$ \\
 \bottomrule
 \end{tabular}
+\end{adjustbox}
 \end{table*}

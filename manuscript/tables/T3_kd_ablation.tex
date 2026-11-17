@@ -8,14 +8,16 @@
 \label{tab:t3-kd-ablation}
 \small
 \setlength{\tabcolsep}{4pt}
+\begin{adjustbox}{max width=\textwidth}
 \begin{tabular}{lccc}
 \toprule
 \textbf{KD} & \textbf{IoU (mean $\pm$ std)} & \textbf{$\Delta$IoU} & \textbf{Wilcoxon $p$} \\
 \midrule
-none      & 0.9367 $\pm$ 0.0055 & ---      & --- \\
+none      & 0.9367 $\pm$ 0.0055 & --      & -- \\
 resp      & 0.9326 $\pm$ 0.0060 & $-0.0041$ & n/a \\
 feat      & 0.9357 $\pm$ 0.0046 & $-0.0011$ & n/a \\
 comb      & 0.9318 $\pm$ 0.0070 & $-0.0049$ & 0.250 \\
 \bottomrule
 \end{tabular}
+\end{adjustbox}
 \end{table}

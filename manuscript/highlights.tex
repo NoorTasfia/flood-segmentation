@@ -13,11 +13,11 @@
 \begin{center}\Large\textbf{Highlights}\end{center}
 
 \begin{itemize}
-\item CPU and browser benchmark of three lightweight flood-segmentation UNets.
-\item On saturated FSSD, pretrained students match the teacher without distillation.
-\item INT8 quantization is architecture-dependent: Lite0 holds, two backbones collapse.
+\item Two-CPU and browser benchmark; the same INT8 model is 2x faster or 3x slower by CPU.
+\item On saturated FSSD, compact pretrained UNets match the larger network without KD.
+\item INT8 collapse is a recipe artefact: per-channel scales fix CNNs, not MobileViT.
 \item FSSD models false-alarm on 70--100\% of dry scenes; retraining cuts this to 3--9\%.
-\item On harder data, distillation lifts flood IoU but copies teacher false alarms.
+\item On harder data, distillation lifts flood IoU but copies the source's false alarms.
 \end{itemize}
 
 \end{document}

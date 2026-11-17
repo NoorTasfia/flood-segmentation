@@ -46,7 +46,8 @@ For each author, EM will ask for first name, last name, email, affiliation, ORCI
 
 | # | First name | Last name | Email | Affiliation | ORCID | Role |
 |---|---|---|---|---|---|---|
-| 1 | Md Ibrahim | Khalil | ibrahim@sensa.no | Sensa AS, Oslo, Norway | _(fill if available)_ | Corresponding |
+| 1 | Tasfia Noor | Chowdhury | tasfiaa.chowdhury@gmail.com | Department of Robotics and Mechatronics Engineering, University of Dhaka, Dhaka 1000, Bangladesh | _(fill if available)_ | First author, corresponding |
+| 2 | Md Ibrahim | Khalil | mik858692@gmail.com | Institute of Information Technology, University of Dhaka, Dhaka 1000, Bangladesh | _(fill if available)_ | Corresponding |
 | 2 | _(co-author)_ | _(if applicable)_ | | | | |
 
 ---

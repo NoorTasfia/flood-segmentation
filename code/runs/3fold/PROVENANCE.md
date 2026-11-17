@@ -9,6 +9,20 @@ Authoritative source file for each quantity reported in the manuscript
 | INT8 quantization, Table 4 | **`quantized.json`** | `quantize_all.py` (commit `cf9577e`, 2026-05-16) — Percentile-99.999% static QDQ recipe |
 | Latency, Table 5 | `lat_m2.json` (M2 Pro ORT-CPU), `lat_wasm.json` (browser WASM SIMD) | `bench_m2.py`, `bench.mjs` |
 | Fold-level Wilcoxon | `stats.json` | `stats.py` |
+| INT8 recipe ablation, Table 12 / S5.3 | `ptq_mechanism.json` (per-tensor, per-channel, HardSwish-FP32, attention-FP32, early-Convs-FP32; folds 0-2; students + teacher) | `scripts/ptq_mechanism_ablation.py` (ONNX Runtime 1.22.1, torch 2.15 CPU, 2026-11-08/09) |
+| MobileViT layer-group diagnostic, S5.3 | `ptq_mobilevit_groups.json` (per-channel, one Conv group quantized at a time; fold 0 complete, folds 1-2 for stem/stage0/stage1/early) | `scripts/ptq_mobilevit_diagnostic.py` |
+| Second-host latency, Table 13 / S5.4 | `../host2/lat_ort_cpu.json` (native ORT 1.22.1), `../host2/lat_wasm_node.json` (ORT-Web 1.22.0, Node 22), `../host2/lat_ort_cpu_u8s8.json` (unsigned activations); fold-0 opset-17 artifacts | `scripts/bench_ort_cpu.py`, `scripts/bench_wasm_node.mjs` (AMD Ryzen 5 5600G, Windows 10) |
+| Unsigned-activation INT8 accuracy, S5.3 item 4 | `../host2/u8s8_fold0.json` (fold 0 only) | ad-hoc script, same recipe as `ptq_mechanism_ablation.py` with `activation_type=QUInt8` |
+| Zero-shot INT8, Table 9 | `zero_shot_3fold.json` (aggregate of `zero_shot_fold{0,1,2}.json`); per-tensor rows = `*_onnx_int8` (exports of `quantize_all.py`), per-channel rows = `*_onnx_int8_pc` (the `pc` artifacts of `ptq_mechanism_ablation.py`, no-KD students) | `scripts/eval_zero_shot.py`, `scripts/eval_zero_shot_onnx.py` (2026-11-10), `scripts/aggregate_zero_shot.py` (std = population std, ddof=0) |
+| Combined-corpus INT8, Table 11 | `../combined/quantized.json` (per-tensor) and `../combined/quantized_pc.json` (per-channel, 18 checkpoints, folds 0-2, 2026-11-10); std = sample std (ddof=1) | `scripts/quantize_combined.py`, `scripts/quantize_combined_pc.py` (ONNX Runtime 1.22.1; per-channel run on the x86 host from the Kaggle-produced `*_fp32_preproc.onnx` exports) |
+
+Note on Table 4 vs Table 12: Table 4 keeps the original per-tensor `quantized.json`
+numbers (ORT 1.22.1 on the M2 host). The `pt` variant of `ptq_mechanism.json` is a
+re-run of that recipe on the x86 host from a fresh opset-17 export; it reproduces the
+fold pattern (e.g. fold-1 MobileNetV3-Small IoU 0.0001 in both) but not the exact
+values (fold-0 MobileNetV3-Small 0.772 vs 0.743), because the calibration batches are
+drawn by a differently seeded loader. The manuscript quotes Table 4 for the per-tensor
+headline and Table 12 for all within-ablation comparisons.
 
 ## Known discrepancy — do NOT use the INT8 block inside `results.json`
 

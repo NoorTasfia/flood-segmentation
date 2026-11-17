@@ -13,16 +13,14 @@ abstract: >-
   ablation and an architecture-dependent post-training-quantization stability
   characterisation.
 authors:
-  - family-names: Chawdhury
+  - family-names: Chowdhury
     given-names: Tasfia Noor
-    affiliation: "[Affiliation to be confirmed]"
+    affiliation: "Department of Robotics and Mechatronics Engineering, University of Dhaka, Dhaka 1000, Bangladesh"
+    email: "tasfiaa.chowdhury@gmail.com"
   - family-names: Khalil
     given-names: Md Ibrahim
-    affiliation: "Sensa AS, Oslo, Norway"
-    email: "ibrahim@sensa.no"
-  - family-names: Haque
-    given-names: Md Ikramul
-    affiliation: "[Affiliation to be confirmed]"
+    affiliation: "Institute of Information Technology, University of Dhaka, Dhaka 1000, Bangladesh"
+    email: "mik858692@gmail.com"
 type: software
 license: MIT
 repository-code: "https://github.com/NoorTasfia/flood-segmentation"
@@ -42,18 +40,16 @@ date-released: "2026-05-17"
 preferred-citation:
   type: article
   authors:
-    - family-names: Chawdhury
+    - family-names: Chowdhury
       given-names: Tasfia Noor
-      affiliation: "[Affiliation to be confirmed]"
+      affiliation: "Department of Robotics and Mechatronics Engineering, University of Dhaka, Dhaka 1000, Bangladesh"
+      email: "tasfiaa.chowdhury@gmail.com"
     - family-names: Khalil
       given-names: Md Ibrahim
-      affiliation: "Sensa AS, Oslo, Norway"
-      email: "ibrahim@sensa.no"
-    - family-names: Haque
-      given-names: Md Ikramul
-      affiliation: "[Affiliation to be confirmed]"
+      affiliation: "Institute of Information Technology, University of Dhaka, Dhaka 1000, Bangladesh"
+      email: "mik858692@gmail.com"
   title: "FloodLite: A CPU-and-Browser Edge-Deployment Benchmark for Lightweight Flood Segmentation"
   journal: "International Journal of Disaster Risk Reduction"
   year: 2026
   status: "in submission"
-  notes: "Under review at IJDRR; archived code release at https://github.com/NoorTasfia/flood-segmentation"
+  notes: "Submitted to the International Journal of Disaster Risk Reduction; archived code release at https://github.com/NoorTasfia/flood-segmentation"

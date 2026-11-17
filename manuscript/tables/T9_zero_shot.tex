@@ -5,10 +5,11 @@
 % =====================================================================
 \begin{table*}[ht]
 \centering
-\caption{\textbf{Zero-shot generalization of FSSD-trained models} (no fine-tuning; mean $\pm$ std across the three folds' checkpoints) on AIFloodSense (94 images, all flood-containing) and the held-out FloodNet test split (424 images, 215 of them water-free). Per-image macro metrics (Section~\ref{sec:setup-metrics}): IoU over all images, flood-only IoU over flood-containing images, and false-alarm rate (FAR) over water-free images. FSSD contains no water-free images, and every FP32 model false-alarms on 72--100\% of water-free FloodNet scenes. INT8 degradation exceeds its in-domain counterpart (cf.~Table~\ref{tab:t4-quant}): MobileNetV3-Small-INT8's seemingly moderate overall FloodNet IoU is an artifact of near-constant background prediction (flood-only IoU 0.08).}
+\caption{\textbf{Zero-shot generalization of FSSD-trained models} (no fine-tuning; mean $\pm$ std across the three folds' checkpoints) on AIFloodSense (94 images, all flood-containing) and the held-out FloodNet test split (424 images, 215 of them water-free). Per-image macro metrics (Section~\ref{sec:setup-metrics}): IoU over all images, flood-only IoU over flood-containing images, and false-alarm rate (FAR) over water-free images. FSSD contains no water-free images, and every FP32 model false-alarms on 72--100\% of water-free FloodNet scenes (70\% for the distilled EfficientNet-Lite0 of Table~\ref{tab:t10-combined}; hence the 70--100\% quoted for all FSSD-trained models). INT8 rows are the no-KD students' ONNX exports under the per-tensor recipe of Table~\ref{tab:t4-quant} (PT) and the per-channel recipe of Table~\ref{tab:t12-ptq-mechanism} (PC). Under PT, degradation exceeds its in-domain counterpart, and MobileNetV3-Small's seemingly moderate overall FloodNet IoU is an artifact of near-constant background prediction (flood-only IoU 0.08); under PC, MobileNetV3-Small and EfficientNet-Lite0 recover to within 0.07 of FP32 on every metric, while MobileViT-XXS still loses 0.18--0.20.}
 \label{tab:t9-zeroshot}
 \small
 \setlength{\tabcolsep}{4pt}
+\begin{adjustbox}{max width=\textwidth}
 \begin{tabular}{llcccc}
 \toprule
 & & \textbf{AIFloodSense} & \multicolumn{3}{c}{\textbf{FloodNet test}} \\
@@ -21,9 +22,14 @@ MobileNetV3-Small       & FP32 & 0.698 $\pm$ 0.008 & 0.285 $\pm$ 0.005 & 0.506 $
 EfficientNet-Lite0      & FP32 & 0.702 $\pm$ 0.006 & 0.388 $\pm$ 0.025 & 0.507 $\pm$ 0.021 & 0.727 $\pm$ 0.032 \\
 MobileViT-XXS           & FP32 & 0.723 $\pm$ 0.006 & 0.253 $\pm$ 0.004 & 0.512 $\pm$ 0.007 & 1.000 $\pm$ 0.000 \\
 \midrule
-MobileNetV3-Small       & INT8 & 0.192 $\pm$ 0.164 & 0.355 $\pm$ 0.140 & 0.077 $\pm$ 0.073 & 0.375 $\pm$ 0.346 \\
-EfficientNet-Lite0      & INT8 & 0.649 $\pm$ 0.028 & 0.258 $\pm$ 0.011 & 0.453 $\pm$ 0.032 & 0.932 $\pm$ 0.012 \\
-MobileViT-XXS           & INT8 & 0.337 $\pm$ 0.078 & 0.092 $\pm$ 0.019 & 0.172 $\pm$ 0.049 & 0.986 $\pm$ 0.011 \\
+MobileNetV3-Small       & INT8 PT & 0.192 $\pm$ 0.164 & 0.355 $\pm$ 0.140 & 0.077 $\pm$ 0.073 & 0.375 $\pm$ 0.346 \\
+EfficientNet-Lite0      & INT8 PT & 0.649 $\pm$ 0.028 & 0.258 $\pm$ 0.011 & 0.453 $\pm$ 0.032 & 0.932 $\pm$ 0.012 \\
+MobileViT-XXS           & INT8 PT & 0.337 $\pm$ 0.078 & 0.092 $\pm$ 0.019 & 0.172 $\pm$ 0.049 & 0.986 $\pm$ 0.011 \\
+\midrule
+MobileNetV3-Small       & INT8 PC & 0.634 $\pm$ 0.023 & 0.248 $\pm$ 0.010 & 0.431 $\pm$ 0.010 & 0.930 $\pm$ 0.010 \\
+EfficientNet-Lite0      & INT8 PC & 0.703 $\pm$ 0.002 & 0.283 $\pm$ 0.009 & 0.456 $\pm$ 0.026 & 0.885 $\pm$ 0.008 \\
+MobileViT-XXS           & INT8 PC & 0.527 $\pm$ 0.036 & 0.164 $\pm$ 0.005 & 0.333 $\pm$ 0.011 & 1.000 $\pm$ 0.000 \\
 \bottomrule
 \end{tabular}
+\end{adjustbox}
 \end{table*}

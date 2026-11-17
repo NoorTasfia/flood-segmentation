@@ -267,9 +267,12 @@ def quantize_int8_onnx_static(model: nn.Module, *, fp_onnx_path, int8_onnx_path,
     # for the bulk of the activation distribution. Percentile is the
     # standard fix.
     #
-    # per_channel=False is required for ViT-style models (MobileViT).
-    # LayerNorm weights are rank-1; the per-channel quantizer assumes axis-1
-    # exists and silently produces broken weights for those layers.
+    # per_channel=False is the recipe reported in Tables 4, 9 and 11 of the
+    # manuscript. NOTE (S5.3, tables/T12_ptq_mechanism.tex, scripts/ptq_mechanism_ablation.py):
+    # per_channel=True runs fine on every model here, MobileViT included, and
+    # removes the MobileNetV3-Small and teacher collapses (-0.44 -> -0.023 and
+    # -0.22 -> -0.009 IoU). It is kept False here only so that the archived
+    # per-tensor results stay reproducible; new deployments should use True.
     from onnxruntime.quantization.calibrate import CalibrationMethod
     quantize_static(
         str(preproc_path),

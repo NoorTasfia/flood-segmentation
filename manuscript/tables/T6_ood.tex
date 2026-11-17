@@ -5,10 +5,11 @@
 % =====================================================================
 \begin{table*}[ht]
 \centering
-\caption{\textbf{Zero-shot out-of-distribution transfer to Sen1Floods11.} FSSD-trained models (no fine-tuning) evaluated on 250 hand-labelled Sentinel-2 RGB chips; mean $\pm$ std over the three folds' checkpoints. In-distribution FSSD IoU (Table~\ref{tab:t2-segmentation}) is shown for reference. Every model collapses to IoU $\approx 0.16$ --- a domain-shift effect that is uniform across teacher, baseline, and students.}
+\caption{\textbf{Zero-shot out-of-distribution transfer to Sen1Floods11.} FSSD-trained models (no fine-tuning) evaluated on 250 hand-labelled Sentinel-2 RGB chips; mean $\pm$ std over the three folds' checkpoints. In-distribution FSSD IoU (Table~\ref{tab:t2-segmentation}) is shown for reference. Metrics are computed per batch of 8 chips and averaged over batches (as in Tables~\ref{tab:t2-segmentation}--\ref{tab:t4-quant}), so the averaged F1 need not lie between the averaged precision and recall. Every model collapses to IoU $\approx 0.16$, a domain-shift effect that is uniform across teacher, baseline, and students.}
 \label{tab:t6-ood}
 \small
 \setlength{\tabcolsep}{5pt}
+\begin{adjustbox}{max width=\textwidth}
 \begin{tabular}{lccccc}
 \toprule
 \textbf{Model} & \textbf{FSSD IoU} & \textbf{OOD IoU} & \textbf{OOD F1} & \textbf{OOD Prec} & \textbf{OOD Rec} \\
@@ -21,4 +22,5 @@ EfficientNet-Lite0 / none   & 0.9277 & 0.155 $\pm$ 0.013 & 0.241 $\pm$ 0.016 & 0
 MobileViT-XXS / none        & 0.9367 & 0.169 $\pm$ 0.009 & 0.265 $\pm$ 0.008 & 0.242 $\pm$ 0.029 & 0.402 $\pm$ 0.036 \\
 \bottomrule
 \end{tabular}
+\end{adjustbox}
 \end{table*}

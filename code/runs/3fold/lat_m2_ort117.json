@@ -1,0 +1,42 @@
+{
+  "host": "macOS-26.2-arm64-arm-64bit",
+  "onnxruntime_version": "1.17.3",
+  "note": "M1 finalization: teacher + students timed under one ORT version, CPUExecutionProvider, 20 warmup + 200 timed, single-image 256x256.",
+  "teacher_fp32_ort_cpu": {
+    "p50_ms": 37.58954198565334,
+    "p95_ms": 44.15741071279625,
+    "mean_ms": 38.333052710513584,
+    "std_ms": 3.4390042175962328,
+    "fps": 26.60314404420427
+  },
+  "mobilenetv3_small_fp32_ort_cpu": {
+    "p50_ms": 21.890791482292116,
+    "p95_ms": 27.99634793482255,
+    "mean_ms": 22.776090603729244,
+    "std_ms": 2.9675616621354295,
+    "fps": 45.68130854514417
+  },
+  "mobilenetv3_small_int8_ort_cpu": {
+    "error": "[ONNXRuntimeError] : 1 : FAIL : Load model from runs/3fold/exports/mobilenetv3_small_fold0_int8.onnx failed:/U"
+  },
+  "efficientnet_lite0_fp32_ort_cpu": {
+    "p50_ms": 36.04660398559645,
+    "p95_ms": 49.93028124736155,
+    "mean_ms": 38.47013625403633,
+    "std_ms": 6.880841623860495,
+    "fps": 27.741864404191347
+  },
+  "efficientnet_lite0_int8_ort_cpu": {
+    "error": "[ONNXRuntimeError] : 1 : FAIL : Load model from runs/3fold/exports/efficientnet_lite0_fold0_int8.onnx failed:/"
+  },
+  "mobilevit_xxs_fp32_ort_cpu": {
+    "p50_ms": 24.10595800029114,
+    "p95_ms": 31.142649656976573,
+    "mean_ms": 24.980576879752334,
+    "std_ms": 2.90226188631265,
+    "fps": 41.48352038064293
+  },
+  "mobilevit_xxs_int8_ort_cpu": {
+    "error": "[ONNXRuntimeError] : 1 : FAIL : Load model from runs/3fold/exports/mobilevit_xxs_fold0_int8.onnx failed:/Users"
+  }
+}

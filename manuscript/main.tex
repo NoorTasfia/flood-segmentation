@@ -1,21 +1,29 @@
 % =====================================================================
 %  FloodLite: A CPU-and-Browser Edge-Deployment Benchmark for
 %             Lightweight Flood Segmentation
-%  Author: Md Ibrahim Khalil (lead)
-%  Target venue: Elsevier International Journal of Disaster Risk
-%                Reduction (IJDRR), primary.
-%  Backup venue: IGARSS 2026 (4-page extended abstract).
+%  Authors: Tasfia Noor Chowdhury, Md Ibrahim Khalil (corresponding)
+%  Target venue: Elsevier International Journal of Disaster Risk Reduction (IJDRR),
+%                double-blind. Build the author-free manuscript file with
+%                   latexmk -pdf main_blind.tex   (defines \BLIND, see below)
+%                and the author-bearing version with  latexmk -pdf main.tex.
+%  Previous venue: Environmental Modelling & Software, ENVSOFT-D-26-03981, desk-rejected 2026-11-09.
 %  Numbers source of truth:
 %       code/runs/3fold/{summary,quantized,lat_m2,lat_wasm}.json
+%       code/runs/3fold/{ptq_mechanism,ptq_mobilevit_groups}.json  (T12, S5.3)
+%       code/runs/host2/*.json                                      (T13, S5.4)
+%       code/runs/3fold/zero_shot_3fold.json                        (T9, S5.8)
+%       code/runs/combined/{quantized,quantized_pc}.json            (T11, S5.9)
 %  Tables source of truth: docs/tables.md
 %  Status: v2 draft (post edge-benchmark pivot, 2026-05-16).
 % =====================================================================
 
-% IJDRR camera-ready style: Elsevier two-column journal format
-% (final, 3p = double-column, times font).  Use [preprint,review,12pt]
-% during review-with-line-numbers; switch to [final,3p,times] for the
-% submission-ready look that matches what published IJDRR papers look like.
-\documentclass[final,3p,times,twocolumn]{elsarticle}
+% Submission layout: single column, double spaced, with line numbers
+% (elsarticle [preprint,review]).  For a two-column camera-ready preview,
+% use [final,3p,times,twocolumn] and remove \linenumbers below.
+\documentclass[preprint,review,12pt]{elsarticle}
+\usepackage{lineno}
+\usepackage[margin=1in]{geometry}  % wider text block so wide tables stay legible
+\usepackage{adjustbox}            % shrink-to-fit for wide tables (tables/*.tex)
 
 % ---------- Packages ----------
 \usepackage[T1]{fontenc}
@@ -51,6 +59,19 @@
 \newcommand{\deployableWASMFPS}{6}
 \newcommand{\teacherMTwoFPS}{26.6}  % teacher ORT-CPU FPS (ORT 1.17); PyTorch-eager was 3.6
 
+% ---------- Double-blind switch ----------
+% \BLIND is defined by main_blind.tex. In the blind build the author block,
+% CRediT, acknowledgements, funding and competing-interest sections are
+% omitted (they go in the separate title page), and the repository URLs
+% that name the authors' accounts are masked.
+\ifdefined\BLIND
+  \newcommand{\repoURL}{[code-repository URL withheld for double-blind review]}
+  \newcommand{\combinedURL}{[dataset URL withheld for double-blind review]}
+\else
+  \newcommand{\repoURL}{\url{https://github.com/NoorTasfia/flood-segmentation}}
+  \newcommand{\combinedURL}{\url{https://www.kaggle.com/datasets/tasfianoorchowdhury/flood-combined-fsegnet}}
+\fi
+
 % Convenience commands.
 \newcommand{\Cn}{C\textsubscript{n}}
 \newcommand{\ie}{i.e.,\ }
@@ -60,6 +81,7 @@
 \journal{International Journal of Disaster Risk Reduction}
 
 \begin{document}
+\linenumbers
 
 % Allow TeX to break lines more loosely; tight column justification
 % with long \texttt{} paths otherwise produces huge inter-word gaps.
@@ -69,32 +91,33 @@
 
 \title{FloodLite: A CPU-and-Browser Edge-Deployment Benchmark for Lightweight Flood Segmentation}
 
-\author[affA]{Tasfia Noor Chawdhury}
-\author[sensa]{Md Ibrahim Khalil\corref{cor1}}
-\ead{ibrahim@sensa.no}
-\author[affC]{Md Ikramul Haque}% NOTE: marked optional by authors; remove if not included.
+\ifdefined\BLIND\else
+\author[rme]{Tasfia Noor Chowdhury\corref{cor1}}
+\ead{tasfiaa.chowdhury@gmail.com}
+\author[iit]{Md Ibrahim Khalil\corref{cor1}}
+\ead{mik858692@gmail.com}
 
-% TODO before submission: confirm affiliations (and emails/ORCIDs) for
-% Chawdhury and Haque. Placeholders below are visible in the compiled PDF.
-\affiliation[affA]{
-  organization={[Affiliation for T.\,N.\ Chawdhury --- to be confirmed]},
+\affiliation[rme]{
+  organization={Department of Robotics and Mechatronics Engineering, University of Dhaka},
+  city={Dhaka},
+  postcode={1000},
+  country={Bangladesh}
 }
-\affiliation[sensa]{
-  organization={Sensa AS},
-  city={Oslo},
-  country={Norway}
-}
-\affiliation[affC]{
-  organization={[Affiliation for M.\,I.\ Haque --- to be confirmed]},
+\affiliation[iit]{
+  organization={Institute of Information Technology, University of Dhaka},
+  city={Dhaka},
+  postcode={1000},
+  country={Bangladesh}
 }
 
-\cortext[cor1]{Corresponding author.}
+\cortext[cor1]{Corresponding authors.}
+\fi
 
 % --- Abstract + keywords ---
 \input{sections/00_abstract}
 
 \begin{keyword}
-flood segmentation \sep edge deployment \sep knowledge distillation \sep post-training quantization \sep ONNX Runtime \sep WebAssembly \sep remote sensing \sep lightweight neural networks \sep disaster response
+flood segmentation \sep edge computing \sep knowledge distillation \sep post-training quantization \sep lightweight neural networks \sep ONNX Runtime \sep false alarms
 \end{keyword}
 
 \end{frontmatter}

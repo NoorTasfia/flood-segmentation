@@ -1,0 +1,42 @@
+{
+  "host": "macOS-26.2-arm64-arm-64bit",
+  "onnxruntime_version": "1.22.1",
+  "torch_version": "2.7.1",
+  "note": "Same-runtime teacher-vs-student re-bench for review M1. Teacher and students both timed under ONNX Runtime CPU via benchmark_onnxruntime. Re-run on onnxruntime==1.17 for submission-grade numbers.",
+  "fold": 0,
+  "teacher_pt_cpu": {
+    "p50_ms": 293.3587500010617,
+    "p95_ms": 322.9068902088329,
+    "mean_ms": 295.32155351160327,
+    "std_ms": 22.95654287613168,
+    "fps": 3.4087955446918863
+  },
+  "teacher_fp32_ort_cpu": {
+    "p50_ms": 37.80597951845266,
+    "p95_ms": 47.69243994378483,
+    "mean_ms": 39.530097522365395,
+    "std_ms": 4.902960848842791,
+    "fps": 26.45084224076013
+  },
+  "mobilenetv3_small_fp32_ort_cpu": {
+    "p50_ms": 20.535082992864773,
+    "p95_ms": 24.096243776148185,
+    "mean_ms": 21.05427639791742,
+    "std_ms": 2.2090712403523094,
+    "fps": 48.69714918354434
+  },
+  "efficientnet_lite0_fp32_ort_cpu": {
+    "p50_ms": 34.67679148889147,
+    "p95_ms": 40.96246490371412,
+    "mean_ms": 36.10440313699655,
+    "std_ms": 7.262591804477273,
+    "fps": 28.837731435457197
+  },
+  "mobilevit_xxs_fp32_ort_cpu": {
+    "p50_ms": 23.395437485305592,
+    "p95_ms": 26.2685806636,
+    "mean_ms": 23.897124819341116,
+    "std_ms": 1.791981862177158,
+    "fps": 42.743376807041486
+  }
+}

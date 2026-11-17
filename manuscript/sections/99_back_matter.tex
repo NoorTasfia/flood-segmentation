@@ -1,24 +1,30 @@
 % =====================================================================
-%  Section 99 -- Back matter (Author Contributions, Funding, Conflicts,
-%                             Data Availability)
+%  Section 99 -- Back matter (Elsevier / IJDRR order): CRediT statement,
+%  competing interests, acknowledgements, funding, data availability and
+%  the generative-AI declaration, which Elsevier requires to sit directly
+%  before the reference list.  In the double-blind build (\BLIND defined
+%  by main_blind.tex) the first four sections are omitted; they appear in
+%  title_page.tex instead, and \repoURL / \combinedURL are masked.
 % =====================================================================
 
-\section*{Author Contributions}
-% TODO before submission: confirm CRediT role assignments across the three
-% authors (T.N.C. = Tasfia Noor Chawdhury; M.I.K. = Md Ibrahim Khalil;
-% M.I.H. = Md Ikramul Haque). The draft below reflects the repository's
-% authorship of the code and experiments (M.I.K.); adjust conceptualisation,
-% supervision, and writing roles as the authors agree.
-Conceptualisation, T.N.C.\ and M.I.K.; methodology, M.I.K.; software, M.I.K.; validation, M.I.K.; investigation, T.N.C., M.I.K.\ and M.I.H.; data curation, M.I.K.; writing --- original draft preparation, M.I.K.; writing --- review and editing, all authors; visualisation, M.I.K.; project administration, M.I.K. All authors have read and agreed to the submitted version of the manuscript.
+\ifdefined\BLIND\else
+\section*{CRediT authorship contribution statement}
+\textbf{Tasfia Noor Chowdhury:} Conceptualization, Investigation, Data curation, Writing (review and editing).
+\textbf{Md Ibrahim Khalil:} Conceptualization, Methodology, Software, Validation, Formal analysis, Investigation, Data curation, Visualization, Writing (original draft), Writing (review and editing), Project administration.
 
-\section*{Funding}
-This research received no external funding.
-
-\section*{Data Availability Statement}
-The Flood Semantic Segmentation Dataset (FSSD) is publicly available at \url{https://www.kaggle.com/datasets/lihuayang111265/flood-semantic-segmentation-dataset}. All trained models, training code, and deployment scripts produced for this study are available at \url{https://github.com/NoorTasfia/flood-segmentation} (MIT licence; Zenodo DOI to be minted at submission). The Sen1Floods11 dataset, used for the out-of-distribution evaluation, is available at \url{https://github.com/cloudtostreet/Sen1Floods11} (CC-BY 4.0). The combined corpus used for the zero-shot and retraining experiments (Kaggle Flood Area Segmentation, CC0; FloodNet v1.0, CDLA-Permissive; AIFloodSense, CC~BY~4.0), with the manifest that fixes every split, is available at \url{https://www.kaggle.com/datasets/tasfianoorchowdhury/flood-combined-fsegnet}; the original sources are cited in Section~\ref{sec:methods-data}.
-
-\section*{Conflicts of Interest}
-The authors declare no conflict of interest.
+\section*{Declaration of competing interest}
+The authors declare that they have no known competing financial interests or personal relationships that could have appeared to influence the work reported in this paper.
 
 \section*{Acknowledgements}
 The authors thank the Kaggle community for the public FSSD dataset and the ONNX Runtime team for the static QDQ quantization API used in this work.
+
+\section*{Funding}
+This research did not receive any specific grant from funding agencies in the public, commercial, or not-for-profit sectors.
+
+\fi
+
+\section*{Data availability}
+The Flood Semantic Segmentation Dataset (FSSD) is publicly available at \url{https://www.kaggle.com/datasets/lihuayang111265/flood-semantic-segmentation-dataset}. All trained models, training code, ONNX exports and deployment scripts produced for this study (the FloodLite toolchain, Python and JavaScript, MIT licence) are available at \repoURL; a tagged release of the submitted version will be archived on Zenodo with a persistent DOI upon acceptance. The Sen1Floods11 dataset, used for the zero-shot out-of-distribution evaluation, is available at \url{https://github.com/cloudtostreet/Sen1Floods11} (CC-BY 4.0). The combined corpus used for the zero-shot and retraining experiments (Kaggle Flood Area Segmentation, CC0; FloodNet v1.0, CDLA-Permissive; AIFloodSense, CC~BY~4.0), with the manifest that fixes every split, is available at \combinedURL; the original sources are cited in Section~\ref{sec:methods-data}.
+
+\section*{Declaration of generative AI and AI-assisted technologies in the writing process}
+During the preparation of this work the authors used Claude (Anthropic) to draft code scaffolding for the benchmarking, table- and figure-generation scripts, to draft the initial LaTeX structure of the manuscript, and to improve the concision and language consistency of the text. The tool was not used to generate experimental results, numerical values, or references; every reported number was produced by author-executed runs and traces to result files in the public code repository. After using this tool, the authors reviewed and edited the content as needed and take full responsibility for the content of the published article.

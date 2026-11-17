@@ -1,0 +1,51 @@
+% =====================================================================
+%  Title page (with author information) -- separate upload for IJDRR's
+%  double-blind review.  Holds everything removed from main_blind.pdf.
+% =====================================================================
+\documentclass[12pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage[hidelinks]{hyperref}
+\usepackage{parskip}
+\pagestyle{empty}
+
+\begin{document}
+
+\begin{center}
+{\Large\bfseries FloodLite: A CPU-and-Browser Edge-Deployment Benchmark for Lightweight Flood Segmentation\par}
+\vspace{1.5em}
+Tasfia Noor Chowdhury\textsuperscript{a,*}, Md Ibrahim Khalil\textsuperscript{b,*}
+\end{center}
+
+\vspace{0.5em}
+\begin{flushleft}
+\textsuperscript{a}\,Department of Robotics and Mechatronics Engineering, University of Dhaka, Dhaka 1000, Bangladesh\\
+\textsuperscript{b}\,Institute of Information Technology, University of Dhaka, Dhaka 1000, Bangladesh\\[0.8em]
+\textsuperscript{*}\,Corresponding authors: Tasfia Noor Chowdhury, \href{mailto:tasfiaa.chowdhury@gmail.com}{tasfiaa.chowdhury@gmail.com}; Md Ibrahim Khalil, \href{mailto:mik858692@gmail.com}{mik858692@gmail.com} (both University of Dhaka, Bangladesh)
+\end{flushleft}
+
+\textbf{Article type:} Research article.
+
+\textbf{Keywords:} flood segmentation; edge computing; knowledge distillation; post-training quantization; lightweight neural networks; ONNX Runtime; false alarms.
+
+\section*{CRediT authorship contribution statement}
+\textbf{Tasfia Noor Chowdhury:} Conceptualization, Investigation, Data curation, Writing (review and editing).
+\textbf{Md Ibrahim Khalil:} Conceptualization, Methodology, Software, Validation, Formal analysis, Investigation, Data curation, Visualization, Writing (original draft), Writing (review and editing), Project administration.
+
+\section*{Declaration of competing interest}
+The authors declare that they have no known competing financial interests or personal relationships that could have appeared to influence the work reported in this paper.
+
+\section*{Funding}
+This research did not receive any specific grant from funding agencies in the public, commercial, or not-for-profit sectors.
+
+\section*{Acknowledgements}
+The authors thank the Kaggle community for the public FSSD dataset and the ONNX Runtime team for the static QDQ quantization API used in this work.
+
+\section*{Data and code availability}
+All trained models, training code, ONNX exports and deployment scripts are available under the MIT licence at \url{https://github.com/NoorTasfia/flood-segmentation}. The combined corpus used for the zero-shot and retraining experiments is available at \url{https://www.kaggle.com/datasets/tasfianoorchowdhury/flood-combined-fsegnet}. These links identify the authors and are therefore withheld from the manuscript file during review.
+
+\section*{Previous submission}
+An earlier version of this manuscript was submitted to \emph{Environmental Modelling \& Software} (ENVSOFT-D-26-03981) and declined without external review on 9 November 2026. The present version adds the per-channel quantization ablation, the second-host latency study and the zero-shot and combined-corpus false-alarm analyses.
+
+\end{document}
