@@ -39,6 +39,12 @@ def main() -> None:
     ap.add_argument("--json", default=None,
                     help="per-fold JSON to merge into (default runs/3fold/zero_shot_fold{N}.json)")
     ap.add_argument("--num_workers", type=int, default=0)
+    ap.add_argument("--kd", default=None,
+                    help="student KD tag for combined-corpus artifacts named {model}_{kd}_fold{N}_{suffix}.onnx")
+    ap.add_argument("--rescuenet_root", default=None,
+                    help="prepared RescueNet test split; adds the rescuenet_test role")
+    ap.add_argument("--roles", nargs="+", default=None,
+                    help="evaluate only these roles (default: all available)")
     args = ap.parse_args()
 
     json_path = Path(args.json or f"runs/3fold/zero_shot_fold{args.fold}.json")
@@ -46,13 +52,17 @@ def main() -> None:
         out = json.loads(json_path.read_text())
     else:
         out = {"fold": args.fold, "roles": {r: {} for r in EVAL_ROLES}}
-    loaders = make_eval_loaders(args.combined_root, num_workers=args.num_workers)
+    loaders = make_eval_loaders(args.combined_root, num_workers=args.num_workers,
+                                rescuenet_root=args.rescuenet_root)
+    if args.roles:
+        loaders = {r: l for r, l in loaders.items() if r in args.roles}
     for m in args.models:
-        op = Path(args.artifacts) / f"{m}_fold{args.fold}_{args.suffix}.onnx"
+        stem = f"{m}_{args.kd}_fold{args.fold}" if args.kd else f"{m}_fold{args.fold}"
+        op = Path(args.artifacts) / f"{stem}_{args.suffix}.onnx"
         if not op.exists():
             print(f"SKIP (no ONNX): {op}")
             continue
-        tag = f"{m}_onnx_{args.tag}"
+        tag = f"{m}_{args.kd}_onnx_{args.tag}" if args.kd else f"{m}_onnx_{args.tag}"
         for role, loader in loaders.items():
             res = evaluate_onnx_per_image(op, loader)
             out["roles"].setdefault(role, {})[tag] = res

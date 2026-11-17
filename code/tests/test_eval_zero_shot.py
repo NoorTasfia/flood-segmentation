@@ -93,3 +93,19 @@ def test_evaluate_onnx_per_image_matches_schema(combined_root, tmp_path):
     res = ezs.evaluate_onnx_per_image(model_path, loaders["floodnet_test"])
     assert res["n_images"] == 3
     assert "iou_mean" in res and len(res["per_image_iou"]) == 3
+
+
+def test_make_eval_loaders_adds_rescuenet_role_when_root_given(combined_root, tmp_path):
+    import sys
+    sys.path.insert(0, str(SCRIPT.parent))
+    from prepare_rescuenet import write_manifest
+    rn = tmp_path / "rescuenet"
+    (rn / "Image").mkdir(parents=True); (rn / "Mask").mkdir()
+    for i in range(3):
+        cv2.imwrite(str(rn / "Image" / f"rescuenet_{i}.jpg"), np.zeros((64, 64, 3), np.uint8))
+        cv2.imwrite(str(rn / "Mask" / f"rescuenet_{i}.png"), np.zeros((64, 64), np.uint8))
+    write_manifest(rn)
+    loaders = ezs.make_eval_loaders(combined_root, rescuenet_root=rn, num_workers=0)
+    assert set(loaders) == {"floodnet_test", "external_test", "rescuenet_test"}
+    assert len(loaders["rescuenet_test"].dataset) == 3
+    assert set(ezs.make_eval_loaders(combined_root, num_workers=0)) == {"floodnet_test", "external_test"}

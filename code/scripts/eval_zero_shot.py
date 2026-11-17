@@ -34,10 +34,12 @@ EVAL_ROLES = ("floodnet_test", "external_test")
 
 
 def make_eval_loaders(root: str | Path, *, img_size: int = 256,
-                      batch_size: int = 8, num_workers: int = 2) -> dict:
-    """Eval-only DataLoaders for the combined dataset's held-out roles."""
+                      batch_size: int = 8, num_workers: int = 2,
+                      rescuenet_root: str | Path | None = None) -> dict:
+    """Eval-only DataLoaders for the combined dataset's held-out roles, plus
+    the RescueNet test split (role ``rescuenet_test``) when its root is given."""
     from torch.utils.data import DataLoader
-    from floodlite.data import FSSD
+    from floodlite.data import FSSD, make_rescuenet_loader
     from floodlite.manifest import load_manifest, pairs_from_rows
 
     root = Path(root)
@@ -48,6 +50,9 @@ def make_eval_loaders(root: str | Path, *, img_size: int = 256,
         ds = FSSD(pairs, img_size=img_size, train=False)
         loaders[role] = DataLoader(ds, batch_size=batch_size, shuffle=False,
                                    num_workers=num_workers, pin_memory=True)
+    if rescuenet_root is not None:
+        loaders["rescuenet_test"] = make_rescuenet_loader(
+            rescuenet_root, batch_size=batch_size, img_size=img_size, num_workers=num_workers)
     return loaders
 
 
@@ -87,15 +92,22 @@ def main() -> None:
                          "ONNX domain-shift comparison.")
     ap.add_argument("--fold", type=int, default=0)
     ap.add_argument("--kd", nargs="+", default=["none", "comb"],
-                    choices=["none", "resp", "feat", "comb"])
+                    choices=["none", "resp", "feat", "comb", "gated"])
+    ap.add_argument("--rescuenet_root", default=None,
+                    help="prepared RescueNet test split; adds the rescuenet_test role")
+    ap.add_argument("--roles", nargs="+", default=None,
+                    help="evaluate only these roles (default: all available)")
     ap.add_argument("--batch_size", type=int, default=8)
     ap.add_argument("--out", default="runs/3fold/zero_shot.json")
     args = ap.parse_args()
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    loaders = make_eval_loaders(args.combined_root, batch_size=args.batch_size)
+    loaders = make_eval_loaders(args.combined_root, batch_size=args.batch_size,
+                                rescuenet_root=args.rescuenet_root)
+    if args.roles:
+        loaders = {r: l for r, l in loaders.items() if r in args.roles}
     ckpt_dir = Path(args.ckpt_dir)
-    out: dict = {"fold": args.fold, "roles": {r: {} for r in EVAL_ROLES}}
+    out: dict = {"fold": args.fold, "roles": {r: {} for r in loaders}}
 
     def _eval_pt(tag: str, factory, ckpt: Path) -> None:
         if not ckpt.exists():
