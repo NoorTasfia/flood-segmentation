@@ -63,8 +63,9 @@ def main():
                     help="'fssd' = original layout + KFold; 'combined' = "
                          "manifest-driven flood-combined-fsegnet splits")
     ap.add_argument("--kd_configs", nargs="+", default=["none", "resp", "feat", "comb"],
-                    choices=["none", "resp", "feat", "comb"],
-                    help="KD configurations to train (D2 reduced grid: none comb)")
+                    choices=["none", "resp", "feat", "comb", "gated"],
+                    help="KD configurations to train (D2 reduced grid: none comb; "
+                         "'gated' = comb with ground-truth-gated KD terms)")
     ap.add_argument("--skip_quant", action="store_true", default=False,
                     help="Skip the INT8 quantization + latency legs "
                          "(recommended for combined-dataset D2 runs)")
@@ -134,8 +135,8 @@ def main():
         fold_results = {"teacher": teacher_metrics, "baseline_mobilenetv2": baseline_metrics, "students": {}}
         for sname in STUDENT_BACKBONES:
             for kd in args.kd_configs:
-                use_resp = kd in ("resp", "comb")
-                use_feat = kd in ("feat", "comb")
+                use_resp = kd in ("resp", "comb", "gated")
+                use_feat = kd in ("feat", "comb", "gated")
                 ckpt = Path(args.out_dir) / f"{sname}_{kd}_fold{fold}.pt"
                 student = make_student(sname).to(device)
                 if args.skip_if_exists and ckpt.exists():
@@ -143,6 +144,7 @@ def main():
                 else:
                     train_student_kd(student, teacher, tr, va,
                                      epochs=args.epochs_student, use_response=use_resp, use_feature=use_feat,
+                                     gate=(kd == "gated"),
                                      device=device, ckpt_path=ckpt)
                 student.load_state_dict(torch.load(ckpt, map_location=device))
                 m = eval_all(student)

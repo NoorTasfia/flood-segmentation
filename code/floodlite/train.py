@@ -8,7 +8,7 @@ from torch.optim import AdamW
 from torch.optim.lr_scheduler import CosineAnnealingLR
 from tqdm.auto import tqdm
 
-from .losses import task_loss, response_kd_loss, FeatureKDLoss
+from .losses import task_loss, response_kd_loss, FeatureKDLoss, teacher_correct_mask
 from .models import attach_decoder_hook
 from .metrics import compute_metrics
 
@@ -59,6 +59,7 @@ def train_student_kd(student, teacher, train_loader, val_loader, *,
                      epochs: int = 50, lr: float = 5e-4,
                      alpha: float = 0.5, beta: float = 0.1, T: float = 4.0,
                      use_response: bool = True, use_feature: bool = True,
+                     gate: bool = False,
                      device: str = "cuda", ckpt_path: str | Path | None = None):
     """Train a student with the FloodLite combined KD loss.
 
@@ -66,6 +67,9 @@ def train_student_kd(student, teacher, train_loader, val_loader, *,
         alpha: weight on response-KD term (combined with task loss)
         beta:  weight on feature-KD term
         use_response, use_feature: toggle ablation modes
+        gate: ground-truth-gated distillation — both KD terms are masked by
+              ``teacher_correct_mask`` so the student imitates the teacher
+              only where the teacher is right.
     """
     student = student.to(device)
     teacher = teacher.to(device).eval()
@@ -103,12 +107,13 @@ def train_student_kd(student, teacher, train_loader, val_loader, *,
                 with torch.no_grad():
                     t_logits = teacher(x)
                     f_t = t_hook.features if use_feature else None
+                    mask = teacher_correct_mask(t_logits, y) if gate else None
                 s_logits = student(x)
                 f_s = s_hook.features if use_feature else None
 
                 L_task = task_loss(s_logits, y)
-                L_resp = response_kd_loss(s_logits, t_logits, T=T) if use_response else torch.tensor(0.0, device=device)
-                L_feat = feat_loss_fn(f_s, f_t) if use_feature else torch.tensor(0.0, device=device)
+                L_resp = response_kd_loss(s_logits, t_logits, T=T, mask=mask) if use_response else torch.tensor(0.0, device=device)
+                L_feat = feat_loss_fn(f_s, f_t, mask=mask) if use_feature else torch.tensor(0.0, device=device)
                 L = (1 - alpha) * L_task + alpha * L_resp + beta * L_feat
 
             scaler.scale(L).backward()
