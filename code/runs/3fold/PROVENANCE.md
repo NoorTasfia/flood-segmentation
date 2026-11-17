@@ -24,6 +24,21 @@ values (fold-0 MobileNetV3-Small 0.772 vs 0.743), because the calibration batche
 drawn by a differently seeded loader. The manuscript quotes Table 4 for the per-tensor
 headline and Table 12 for all within-ablation comparisons.
 
+## Training hyperparameters (as reported in manuscript Section 4.1)
+
+| Quantity | Value | Source |
+|---|---|---|
+| Optimiser | AdamW, weight decay 1e-4 | `floodlite/train.py` (`train_teacher` line 20, `train_student_kd` line 91) |
+| Learning rate, teacher | 1e-4 | `train_teacher(..., lr=1e-4)` default; notebook cell `AdamW(teacher.parameters(), lr=1e-4)` |
+| Learning rate, students | 5e-4 | `train_student_kd(..., lr=5e-4)` default; notebook cell `AdamW(opt_params, lr=5e-4)` |
+| Schedule | CosineAnnealingLR, T_max = epochs | `floodlite/train.py` lines 21, 92 |
+| Epochs | 35 (teacher and students) | `scripts/run_full_experiment.py --epochs_teacher/--epochs_student` default 35, the producer of `results.json` per the table above. The standalone notebook `floodlite_kaggle.ipynb` defaults to 50 and was not the producer. |
+| Batch size | 8, all models | `scripts/run_full_experiment.py --batch_size` default 8; combined-corpus notebook passes no override |
+| Seed | 42 | `KFold(random_state=42)`; sampler seed 42 |
+| Checkpoint | best validation-IoU epoch of the reported fold (optimistic selection, shared by all configurations) | `train_*` in `floodlite/train.py` |
+
+Corrected 2026-11-17: the manuscript previously stated lr 3e-4 and batch 16 for students; neither value appears in the code.
+
 ## Known discrepancy — do NOT use the INT8 block inside `results.json`
 
 `results.json` (commit `d5557ff`, 2026-05-03) was produced by an earlier run of
