@@ -234,6 +234,19 @@ def make_combined_loaders(root: str | Path, fold: int, n_folds: int = 5,
     return loaders
 
 
+def make_rescuenet_loader(root: str | Path, *, batch_size: int = 8, img_size: int = 256,
+                          num_workers: int = 0) -> DataLoader:
+    """Evaluation DataLoader for the RescueNet test split prepared by
+    ``scripts/prepare_rescuenet.py`` (``Image/``, ``Mask/``, ``manifest.csv``)."""
+    root = Path(root)
+    import csv
+    with open(root / "manifest.csv", encoding="utf-8") as f:
+        rows = list(csv.DictReader(f))
+    pairs = pairs_from_rows(root, rows)
+    ds = FSSD(pairs, img_size=img_size, train=False)
+    return DataLoader(ds, batch_size=batch_size, shuffle=False, num_workers=num_workers)
+
+
 def make_sen1floods11_loader(root: str | Path, *, n_chips: int = 250,
                               batch_size: int = 8, img_size: int = 256,
                               num_workers: int = 2):
